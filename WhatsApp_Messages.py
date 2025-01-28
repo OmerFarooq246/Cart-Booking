@@ -18,7 +18,7 @@ class WhatsApp_Messages():
             }
             data = {
                 "messaging_product": "whatsapp",
-                "to": number,
+                "to": f"+{number}",
                 "type": "template",
                 "template": {"name": "hello_world", "language": {"code": "en_US"}},
             }
@@ -28,7 +28,7 @@ class WhatsApp_Messages():
         except Exception as error:
             raise Exception(f"Error in send_welcome_message = {error}")
         
-    def send_select_language(self, number):
+    def send_select_language_int(self, number):
         try:
             headers = {
                 "Authorization": f"Bearer {os.getenv("ACCESS_TOKEN")}",
@@ -36,7 +36,7 @@ class WhatsApp_Messages():
             }
             data = {
                 "messaging_product": "whatsapp",
-                "to": number,
+                "to": f"+{number}",
                 "type": "interactive",
                 "interactive": {
                     "type": "button",
@@ -80,11 +80,11 @@ class WhatsApp_Messages():
             }
             data = {
                 "messaging_product": "whatsapp",
-                "to": number,
+                "to": f"+{number}",
                 "type": "interactive",
                 "interactive": {
                     "type": "button",
-                    "body": {"text": Langs["lang"]["destination_msg"]},
+                    "body": {"text": Langs[lang]["destination_msg"]},
                     "action": {
                         "buttons": [
                             {
@@ -112,7 +112,7 @@ class WhatsApp_Messages():
             }
             data = {
                 "messaging_product": "whatsapp",
-                "to": number,
+                "to": f"+{number}",
                 "type": "text",
                 "text": {
                     "body": msg,
@@ -133,7 +133,7 @@ class WhatsApp_Messages():
                 "messaging_product": "whatsapp",
                 "recipient_type": "individual",
                 "type": "interactive",
-                "to": number,
+                "to": f"+{number}",
                 "interactive": {
                     "type": "location_request_message",
                     "body": {
@@ -158,10 +158,10 @@ class WhatsApp_Messages():
             data = {
                 "messaging_product": "whatsapp",
                 "recipient_type": "individual",
-                "to": number,
+                "to": f"+{number}",
                 "type": "text",
                 "text": {
-                    "preview_url": link,
+                    # "preview_url": link,
                     "body": Langs[lang]["assembly_point"].format(google_maps_link=link)
                 }
             }
@@ -170,7 +170,7 @@ class WhatsApp_Messages():
         except Exception as error:
             raise Exception(f"Error in send_nearest_ap = {error}")
     
-    def send_summary(self, number, lang, destination, passengers, google_maps_link, status):
+    def send_summary(self, number, name, lang, destination, passengers, google_maps_link, booking_status):
         try:
             total_cost = self.cost_per_passenger * passengers
             headers = {
@@ -180,21 +180,22 @@ class WhatsApp_Messages():
             data = {
                 "messaging_product": "whatsapp",
                 "recipient_type": "individual",
-                "to": number,
+                "to": f"+{number}",
                 "type": "text",
                 "text": {
-                    "preview_url": google_maps_link,
+                    # "preview_url": google_maps_link,
                     "body": Langs[lang]["summary"].format(
+                        name=name,
                         destination=destination,
                         passengers=passengers,
                         google_maps_link=google_maps_link,
                         total_cost=total_cost,
-                        status=status
+                        booking_status=booking_status
                     )
                 }
             }
             res = requests.post(self.url, headers=headers, json=data)
-            return res
+            return res, total_cost
         except Exception as error:
             raise Exception(f"Error in send_summary = {error}")
     
@@ -207,7 +208,7 @@ class WhatsApp_Messages():
             data = {
                 "messaging_product": "whatsapp",
                 "recipient_type": "individual",
-                "to": number,
+                "to": f"+{number}",
                 "type": "interactive",
                 "interactive": {
                     "type": "button",
