@@ -7,8 +7,9 @@ Langs = {
             "Quba Mosque"
         ],
         "passengers_prompt": "How many passengers? (Enter any number)\nNumber of passengers: n\nTotal cost: 15 SAR × n = (total) SAR",
+        "total_cost": "Total cost = {total_cost} SAR",
         "location_prompt": "Please share your current location so we can find the nearest gathering point.",
-        "assembly_point": "Location received.\nYour nearest pickup point is:\n{google_maps_link}",
+        "assembly_point": "Location received.\nYour nearest pickup point.",
         "cc_msg": "Confirm your booking now:",
         "cc_options": [
             "Confirm", 
@@ -26,8 +27,9 @@ Langs = {
             "مسجد قباء"
         ],
         "passengers_prompt": "كم عدد الركاب؟ (يمكنك إدخال أي عدد)\nعدد الركاب: n\nالتكلفة الإجمالية: 15 ريال × n = (المجموع) ريال سعودي",
+        "total_cost": "التكلفة الإجمالية = {total_cost} ريال سعودي",
         "location_prompt": "فضلاً شارك موقعك الحالي لتحديد أقرب نقطة تجمع.",
-        "assembly_point": "تم استلام موقعك.\nأقرب نقطة تجمع لعربة الغولف هي:\n{google_maps_link}",
+        "assembly_point": "تم استلام موقعك.\nأقرب نقطة تجمع لعربة الغولف هي",
         "cc_msg": "لتأكيد الحجز:",
         "cc_options": [
             "تأكيد", 

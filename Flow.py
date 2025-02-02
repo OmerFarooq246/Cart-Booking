@@ -4,8 +4,9 @@ from pymongo import MongoClient
 from pymongo.server_api import ServerApi
 import certifi
 from WhatsApp_Messages import WhatsApp_Messages
-from translations import langs_list, Langs, cc_list
+from translations import langs_list, Langs, cc_list, dests_list
 from datetime import datetime
+import qrcode
 
 '''
 customer.status = 
@@ -30,11 +31,8 @@ class Flow:
 
     def init_conv(self):
         try:
-            # number = input("enter phone number: ")
             number = "923359950161"
-            # res = wa_msg.send_welcome_message(self.number)
             res = self.handle_conv_init(number)
-            # if res: wa_msg.send_text_message("Greetings, Enter your name.")
         except Exception as error:
             print("error in init_conv:", error)
 
@@ -45,11 +43,12 @@ class Flow:
                 if res["status"] == "done":
                     entry = {
                         "number": number,
+                        "name": res["name"],
                         "status": "lang"
                     }
                     res = self.DB.Cutomers.insert_one(entry)
-                    select_lang_txt = "Select Language:\n1. English\n2. Arabic\n3. Urdu\n4. Turkish\n5. French"
-                    customer = wa_msg.send_text_message(number, select_lang_txt)
+                    # select_lang_txt = "Select Language:\n1. English\n2. Arabic\n3. Urdu\n4. Turkish\n5. French"
+                    res = wa_msg.send_select_language_list(number)
                     # return False
                 else:
                     print("Process Failure, New Conv init with previous not done")
@@ -81,8 +80,8 @@ class Flow:
                             print("reply to welcome msg found")
                             name = msg["msg"]
                             # print(f"name: {name}")
-                            select_lang_txt = "Select Language:\n1. English\n2. Arabic\n3. Urdu\n4. Turkish\n5. French"
-                            res = wa_msg.send_text_message(number, select_lang_txt)
+                            # select_lang_txt = "Select Language:\n1. English\n2. Arabic\n3. Urdu\n4. Turkish\n5. French"
+                            res = wa_msg.send_select_language_list(number)
                             res = self.DB.Cutomers.update_one({ "_id": new_customer["_id"] }, { "$set": { "name": name, "status": "lang" } })
                             # res = self.DB.Cutomers.update_one({ "_id": new_customer["_id"] }, { "$set": { "name": name, "status": "start" } })
                             res = self.DB.Messages.update_one({ "_id": msg["_id"] }, { "$set": { "read": True } })
@@ -109,12 +108,6 @@ class Flow:
                         customer_psgr = list(filter(lambda item: item["status"] == "psgr", customer_list))
                         customer_loct = list(filter(lambda item: item["status"] == "loct", customer_list))
                         customer_coca = list(filter(lambda item: item["status"] == "coca", customer_list))
-                        # print(f"customer_start: {customer_start}")
-                        # print(f"customer_lang: {customer_lang}")
-                        # print(f"customer_dest: {customer_dest}")
-                        # print(f"customer_psgr: {customer_psgr}")
-                        # print(f"customer_loct: {customer_loct}")
-                        # print(f"customer_coca: {customer_coca}")
                         if len(customer_start) > 1:
                                 print("Process Failure, More than one START entries for a number")
                                 continue
@@ -136,12 +129,11 @@ class Flow:
                         
                         for customer in customer_list:
                             if customer["status"] == "start":
-                                select_lang_txt = "Select Language:\n1. English\n2. Arabic\n3. Urdu\n4. Turkish\n5. French"
-                                customer = wa_msg.send_text_message(number, select_lang_txt)
+                                # select_lang_txt = "Select Language:\n1. English\n2. Arabic\n3. Urdu\n4. Turkish\n5. French"
+                                res = wa_msg.send_select_language_list(number)
                                 res = self.DB.Cutomers.update_one({ "_id": customer["_id"] }, { "$set": { "status": "lang" } })
                             elif customer["status"] == "lang":
                                 selected_lang = msg["msg"].lower()
-                                # selected_lang = "english"
                                 if selected_lang not in langs_list:
                                     print("sending lang emaphasis msg")
                                     select_lan_emphasis = "Please select language from the following only:\n1. English\n2. Arabic\n3. Urdu\n4. Turkish\n5. French"
@@ -151,10 +143,16 @@ class Flow:
                                     res = wa_msg.send_select_destination(number, selected_lang)
                                     res = self.DB.Cutomers.update_one({ "_id": customer["_id"] }, { "$set": { "status": "dest" } })
                             elif customer["status"] == "dest":
+                                type = msg["type"]
                                 selected_dest = msg["msg"]
-                                res = self.DB.Cutomers.update_one({ "_id": customer["_id"] }, { "$set": { "dest": selected_dest } })
-                                res = wa_msg.send_text_message(number, Langs[customer["lang"]]["passengers_prompt"])
-                                res = self.DB.Cutomers.update_one({ "_id": customer["_id"] }, { "$set": { "status": "psgr" } })
+                                if type == "interactive" and selected_dest in dests_list:
+                                    res = self.DB.Cutomers.update_one({ "_id": customer["_id"] }, { "$set": { "dest": selected_dest } })
+                                    res = wa_msg.send_text_message(number, Langs[customer["lang"]]["passengers_prompt"])
+                                    res = self.DB.Cutomers.update_one({ "_id": customer["_id"] }, { "$set": { "status": "psgr" } })
+                                else:
+                                    print("sending dest emaphasis msg")
+                                    loct_emphasis = "Please selct destination"
+                                    res = wa_msg.send_text_message(number, loct_emphasis)
                             elif customer["status"] == "psgr":
                                 psgr_no_txt = msg["msg"]
                                 try:
@@ -165,6 +163,8 @@ class Flow:
                                     res = wa_msg.send_text_message(number, psgr_emphasis)
                                     continue
                                 res = self.DB.Cutomers.update_one({ "_id": customer["_id"] }, { "$set": { "psgr": psgr_no } })
+                                total_cost_msg = Langs[customer["lang"]]["total_cost"].format(total_cost = psgr_no * wa_msg.cost_per_passenger)
+                                res = wa_msg.send_text_message(number, total_cost_msg)
                                 res = wa_msg.location_req_msg(number, customer["lang"])
                                 res = self.DB.Cutomers.update_one({ "_id": customer["_id"] }, { "$set": { "status": "loct" } })
                             elif customer["status"] == "loct":
@@ -173,14 +173,14 @@ class Flow:
                                         location = msg["msg"]
                                         lati = location["latitude"]
                                         long = location["longitude"]
-                                        nearest_ap = get_nearest_ap(lati, long)
+                                        ap_location = self.get_nearest_ap(lati, long)
                                         # res = self.DB.Cutomers.update_one({ "_id": customer["_id"] }, { "$set": { "nearest_ap": nearest_ap } })
-                                        res = wa_msg.send_nearest_ap(number, customer["lang"], nearest_ap)
-                                        res, total_cost = wa_msg.send_summary(number, customer["name"], customer["lang"], customer["dest"], customer["psgr"], nearest_ap, "Awaiting Confirmation")
+                                        res = wa_msg.send_nearest_ap(number, customer["lang"], ap_location)
+                                        res, total_cost = wa_msg.send_summary(number, customer["name"], customer["lang"], customer["dest"], customer["psgr"], ap_location["link"], "Awaiting Confirmation")
                                         res = wa_msg.send_cc_msg(number, customer["lang"])
                                         updates = {
                                             "status": "coca",
-                                            "nearest_ap": nearest_ap,
+                                            "nearest_ap": ap_location,
                                             "location": location,
                                             "total_cost": total_cost
                                         }
@@ -216,8 +216,13 @@ class Flow:
                                             "status": "active",
                                             "timestamp": datetime.now(),
                                         }
-                                        res = self.DB.Bookings.insert_one(booking)
+                                        booking_id = self.DB.Bookings.insert_one(booking).inserted_id
                                         res = wa_msg.send_text_message(number, Langs[customer["lang"]]["confirmation"])
+                                        self.generate_qr_code(booking_id)
+                                        # img_path = self.generate_qr_code(booking_id)
+                                        # img_id = wa_msg.upload_qr_img(img_path)
+                                        img_link= f"http://localhost:3000/uploads/image.png"
+                                        res = wa_msg.send_qr_code(number, img_link)
                                     else:
                                         res = wa_msg.send_text_message(number, Langs[customer["lang"]]["cencellation"])
                                     res = self.DB.Cutomers.update_one({ "_id": customer["_id"] }, { "$set": { "status": "done" } })
@@ -229,6 +234,38 @@ class Flow:
         except Exception as error:
             print(f"Error in handle_conv_flow = {error}")
 
+    def generate_qr_code(self, booking_id):
+        try:
+            data = f"{os.getenv("SERVE")}/booking/{booking_id}"
+            qr = qrcode.QRCode(
+                version=1,
+                error_correction=qrcode.constants.ERROR_CORRECT_L,
+                box_size=10,
+                border=4,
+            )
+            qr.add_data(data)
+            qr.make(fit=True)
+            img = qr.make_image(fill_color="black", back_color="white")
+            files = {'file': (f"{booking_id}.png", img, 'image/png')}
+            # res = requests.post(f"{os.getenv("SERVE")}/qr_upload", files=files)
+            # print(f"upload res: {res}")
+            # img_path = f"/Users/traveler/Desktop/VSCODEs/Cart Booking/qr_codes/{booking_id}.png"
+            # img.save(img_path)
+            # return img_path
+        except Exception as error:
+            print(f"error in generating qr code: ", error)
+    
+    # def upload_qr_code(self, img):
+    #     try:
+    #         with open(img_path, 'rb') as image_file:
+    #             response = requests.post(url, files={'file': image_file})
+    #     except Exception as error:
+    #         print(f"error in generating qr code: ", error)
 
-def get_nearest_ap(lati, long):
-    return "https://www.google.com/maps?q=24.4728407,39.6112426&entry=gps&lucs=,94242568,94224825,94227247,94227248,47071704,47069508,94218641,94203019,47084304,94208458,94208447&g_ep=CAISEjI0LjUwLjAuNzA0NDI3ODkxMBgAIJ6dCipjLDk0MjQyNTY4LDk0MjI0ODI1LDk0MjI3MjQ3LDk0MjI3MjQ4LDQ3MDcxNzA0LDQ3MDY5NTA4LDk0MjE4NjQxLDk0MjAzMDE5LDQ3MDg0MzA0LDk0MjA4NDU4LDk0MjA4NDQ3QgJTQQ%3D%3D&g_st=com.google.maps.preview.copy"
+    def get_nearest_ap(self, lati="", long=""):
+        location = {
+            "link": "https://www.google.com/maps?q=24.4728407,39.6112426&entry=gps&lucs=,94242568,94224825,94227247,94227248,47071704,47069508,94218641,94203019,47084304,94208458,94208447&g_ep=CAISEjI0LjUwLjAuNzA0NDI3ODkxMBgAIJ6dCipjLDk0MjQyNTY4LDk0MjI0ODI1LDk0MjI3MjQ3LDk0MjI3MjQ4LDQ3MDcxNzA0LDQ3MDY5NTA4LDk0MjE4NjQxLDk0MjAzMDE5LDQ3MDg0MzA0LDk0MjA4NDU4LDk0MjA4NDQ3QgJTQQ%3D%3D&g_st=com.google.maps.preview.copy",
+            "latitude": 24.4728407,
+            "longitude": 39.6112426,
+        }
+        return location
