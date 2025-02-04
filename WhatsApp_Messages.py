@@ -152,6 +152,7 @@ class WhatsApp_Messages():
                 "to": f"+{number}",
                 "type": "text",
                 "text": {
+                    "preview_url": 1 == 1,
                     "body": msg
                 },
             }
@@ -311,7 +312,7 @@ class WhatsApp_Messages():
         except Exception as error:
             raise Exception(f"Error in upload_qr_img = {error}")
 
-    def send_qr_code(self, number, img_id):
+    def send_qr_code(self, number, msg, img_link):
         try:
             headers = {
                 "Authorization": f"Bearer {os.getenv("ACCESS_TOKEN")}",
@@ -323,15 +324,14 @@ class WhatsApp_Messages():
                 "to": f"+{number}",
                 "type": "image",
                 "image": {
-                    "id" : str(img_id),
-                    # "link": img_link,
-                    # "caption": "Your booking QR Code"
+                    "link": img_link,
+                    "caption": msg
                 }
             }
             res = requests.post(self.url, headers=headers, json=data)
             return res
         except Exception as error:
-            raise Exception(f"Error in send_text_mesend_qr_codessage = {error}")
+            raise Exception(f"Error in send_qr_code = {error}")
         
     # def download_media(self, img_id):
     #     try:

@@ -3,10 +3,10 @@ import os
 from pymongo import MongoClient
 from pymongo.server_api import ServerApi
 import certifi
+import requests
 from WhatsApp_Messages import WhatsApp_Messages
 from translations import langs_list, Langs, cc_list, dests_list
 from datetime import datetime
-import qrcode
 
 '''
 customer.status = 
@@ -25,13 +25,13 @@ load_dotenv()
 wa_msg = WhatsApp_Messages(15)
 
 class Flow:
-    def __init__(self):
+    def __init__(self, staff_number):
         self.client = MongoClient(os.getenv("MONGO_URI"), server_api=ServerApi('1'), tls=True, tlsCAFile=certifi.where())
         self.DB = self.client["Cart_Booking"]
+        self.staff_number = staff_number
 
-    def init_conv(self):
+    def init_conv(self, number):
         try:
-            number = "923359950161"
             res = self.handle_conv_init(number)
         except Exception as error:
             print("error in init_conv:", error)
@@ -47,9 +47,7 @@ class Flow:
                         "status": "lang"
                     }
                     res = self.DB.Cutomers.insert_one(entry)
-                    # select_lang_txt = "Select Language:\n1. English\n2. Arabic\n3. Urdu\n4. Turkish\n5. French"
                     res = wa_msg.send_select_language_list(number)
-                    # return False
                 else:
                     print("Process Failure, New Conv init with previous not done")
             else:
@@ -59,7 +57,6 @@ class Flow:
                 }
                 res = self.DB.Cutomers.insert_one(entry)
                 res = wa_msg.send_welcome_message(number)
-                # return True
         except Exception as error:
             print(f"Error in handle_conv_init = {error}")
 
@@ -79,14 +76,9 @@ class Flow:
                             print(f"new_customer: {new_customer}")
                             print("reply to welcome msg found")
                             name = msg["msg"]
-                            # print(f"name: {name}")
-                            # select_lang_txt = "Select Language:\n1. English\n2. Arabic\n3. Urdu\n4. Turkish\n5. French"
                             res = wa_msg.send_select_language_list(number)
                             res = self.DB.Cutomers.update_one({ "_id": new_customer["_id"] }, { "$set": { "name": name, "status": "lang" } })
-                            # res = self.DB.Cutomers.update_one({ "_id": new_customer["_id"] }, { "$set": { "name": name, "status": "start" } })
                             res = self.DB.Messages.update_one({ "_id": msg["_id"] }, { "$set": { "read": True } })
-                    # else:
-                    #     print(f"no new customers")
             else:
                 print("no unread messages")
         except Exception as error:
@@ -129,7 +121,6 @@ class Flow:
                         
                         for customer in customer_list:
                             if customer["status"] == "start":
-                                # select_lang_txt = "Select Language:\n1. English\n2. Arabic\n3. Urdu\n4. Turkish\n5. French"
                                 res = wa_msg.send_select_language_list(number)
                                 res = self.DB.Cutomers.update_one({ "_id": customer["_id"] }, { "$set": { "status": "lang" } })
                             elif customer["status"] == "lang":
@@ -174,7 +165,6 @@ class Flow:
                                         lati = location["latitude"]
                                         long = location["longitude"]
                                         ap_location = self.get_nearest_ap(lati, long)
-                                        # res = self.DB.Cutomers.update_one({ "_id": customer["_id"] }, { "$set": { "nearest_ap": nearest_ap } })
                                         res = wa_msg.send_nearest_ap(number, customer["lang"], ap_location)
                                         res, total_cost = wa_msg.send_summary(number, customer["name"], customer["lang"], customer["dest"], customer["psgr"], ap_location["link"], "Awaiting Confirmation")
                                         res = wa_msg.send_cc_msg(number, customer["lang"])
@@ -184,7 +174,6 @@ class Flow:
                                             "location": location,
                                             "total_cost": total_cost
                                         }
-                                        # res = self.DB.Cutomers.update_one({ "_id": customer["_id"] }, { "$set": { "status": "coca" } })
                                         res = self.DB.Cutomers.update_one({ "_id": customer["_id"] }, { "$set": updates })
                                     else:
                                         print("sending loct emaphasis msg")
@@ -218,11 +207,11 @@ class Flow:
                                         }
                                         booking_id = self.DB.Bookings.insert_one(booking).inserted_id
                                         res = wa_msg.send_text_message(number, Langs[customer["lang"]]["confirmation"])
-                                        self.generate_qr_code(booking_id)
-                                        # img_path = self.generate_qr_code(booking_id)
-                                        # img_id = wa_msg.upload_qr_img(img_path)
-                                        img_link= f"http://localhost:3000/uploads/image.png"
-                                        res = wa_msg.send_qr_code(number, img_link)
+                                        qrUrl = self.send_booking_id(booking_id)
+                                        res = wa_msg.send_qr_code(number, Langs[customer["lang"]]["qr_code"], qrUrl)
+                                        print(f"res of send qr code: {res}")
+                                        res = wa_msg.send_qr_code(self.staff_number, f"QR Code of {customer["name"]}", qrUrl)
+                                        print(f"res of send qr code staff: {res}")
                                     else:
                                         res = wa_msg.send_text_message(number, Langs[customer["lang"]]["cencellation"])
                                     res = self.DB.Cutomers.update_one({ "_id": customer["_id"] }, { "$set": { "status": "done" } })
@@ -234,31 +223,32 @@ class Flow:
         except Exception as error:
             print(f"Error in handle_conv_flow = {error}")
 
-    def generate_qr_code(self, booking_id):
+    def send_booking_id(self, booking_id):
         try:
-            data = f"{os.getenv("SERVE")}/booking/{booking_id}"
-            qr = qrcode.QRCode(
-                version=1,
-                error_correction=qrcode.constants.ERROR_CORRECT_L,
-                box_size=10,
-                border=4,
-            )
-            qr.add_data(data)
-            qr.make(fit=True)
-            img = qr.make_image(fill_color="black", back_color="white")
-            files = {'file': (f"{booking_id}.png", img, 'image/png')}
-            # res = requests.post(f"{os.getenv("SERVE")}/qr_upload", files=files)
-            # print(f"upload res: {res}")
-            # img_path = f"/Users/traveler/Desktop/VSCODEs/Cart Booking/qr_codes/{booking_id}.png"
-            # img.save(img_path)
-            # return img_path
+            serve_url = f"{os.getenv("SERVE")}/api/generate_qr"
+            data = {
+                "booking_id": str(booking_id)
+            }
+            res = requests.post(serve_url, json=data)
+            qrUrl = res.json()["qrUrl"]
+            print(f"res of send_booking_id: {qrUrl}")
+            return f"{os.getenv("SERVE")}{qrUrl}"
         except Exception as error:
-            print(f"error in generating qr code: ", error)
-    
-    # def upload_qr_code(self, img):
+            print(f"error in send_booking_id: ", error)
+
+    # def generate_qr_code(self, booking_id):
     #     try:
-    #         with open(img_path, 'rb') as image_file:
-    #             response = requests.post(url, files={'file': image_file})
+    #         data = f"{os.getenv("SERVE")}/api/booking/{booking_id}"
+    #         qr = qrcode.QRCode(
+    #             version=1,
+    #             error_correction=qrcode.constants.ERROR_CORRECT_L,
+    #             box_size=10,
+    #             border=4,
+    #         )
+    #         qr.add_data(data)
+    #         qr.make(fit=True)
+    #         img = qr.make_image(fill_color="black", back_color="white")
+    #         files = {'file': (f"{booking_id}.png", img, 'image/png')}
     #     except Exception as error:
     #         print(f"error in generating qr code: ", error)
 
