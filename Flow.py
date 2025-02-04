@@ -136,7 +136,7 @@ class Flow:
                                 selected_lang = msg["msg"].lower()
                                 if selected_lang not in langs_list:
                                     print("sending lang emaphasis msg")
-                                    select_lan_emphasis = "Please select language from the following only:\n1. English\n2. Arabic\n3. Urdu\n4. Turkish\n5. French"
+                                    select_lan_emphasis = "Please select language from the list"
                                     res = wa_msg.send_text_message(number, select_lan_emphasis)
                                 else:
                                     res = self.DB.Cutomers.update_one({ "_id": customer["_id"] }, { "$set": { "lang": selected_lang } })
@@ -151,7 +151,7 @@ class Flow:
                                     res = self.DB.Cutomers.update_one({ "_id": customer["_id"] }, { "$set": { "status": "psgr" } })
                                 else:
                                     print("sending dest emaphasis msg")
-                                    loct_emphasis = "Please selct destination"
+                                    loct_emphasis = "Please select destination"
                                     res = wa_msg.send_text_message(number, loct_emphasis)
                             elif customer["status"] == "psgr":
                                 psgr_no_txt = msg["msg"]
