@@ -212,8 +212,8 @@ class Flow:
                                         print(f"res of send qr code: {res}")
                                         res = wa_msg.send_qr_code(self.staff_number, f"QR Code of {customer["name"]}", qrUrl)
                                         print(f"res of send qr code staff: {res}")
-                                    else:
-                                        res = wa_msg.send_text_message(number, Langs[customer["lang"]]["cencellation"])
+                                    # else:
+                                        # res = wa_msg.send_text_message(number, Langs[customer["lang"]]["cencellation"])
                                     res = self.DB.Cutomers.update_one({ "_id": customer["_id"] }, { "$set": { "status": "done" } })
                             else:
                                 print(" -- unkown status found --")

@@ -48,11 +48,11 @@ class WhatsApp_Messages():
                             {
                             "title": "Languages",
                             "rows": [
-                                { "id": "Arabic", "title": "Arabic" },
+                                { "id": "Arabic", "title": "العربية" },
                                 { "id": "English", "title": "English" },
-                                { "id": "Urdu", "title": "Urdu" },
-                                { "id": "Turkish", "title": "Turkish" },
-                                { "id": "French", "title": "French" },
+                                { "id": "Urdu", "title": "اردو" },
+                                { "id": "Turkish", "title": "Türkçe" },
+                                { "id": "French", "title": "Français" },
                             ]
                             }
                         ],
