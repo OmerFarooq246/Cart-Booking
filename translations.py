@@ -1,10 +1,10 @@
 Langs = {
     "english": {
-        "introduction": "Welcome to Jawlah, a service providing easy and comfortable electric cart transportation between the Prophet’s Mosque and Quba Mosque.",
+        "introduction": "Welcome to Jawlah, a service providing easy and comfortable electric cart transportation between the Prophet’s Masjid and Quba Masjid.",
         "destination_msg": "Please choose your destination:", 
         "destinations": [
-            "Prophet’s Mosque",
-            "Quba Mosque"
+            "Prophet’s Masjid",
+            "Quba Masjid"
         ],
         "passengers_prompt": "How many passengers? (You can enter a number only)\nCost per person is 15 SAR.",
         "total_cost": "Total cost = {total_cost} SAR",
@@ -17,7 +17,7 @@ Langs = {
         ],
         "confirmation": "Your reservation is confirmed and now Active.",
         # "cencellation": "Your reservation has been canceled.\nThank you for reaching out!",
-        "summary": "*Booking Summary:*\nName: {name}\nDestination: {destination}\nNo. of Passengers: {passengers}\nPickup Point: {google_maps_link}\nTotal Cost: {total_cost}\nBooking Status: {booking_status}",
+        "summary": "*Booking Summary:*\nName: {name}\nDestination: {destination}\nNo. of Passengers: {passengers}\nTotal Cost: {total_cost}\nPickup Point: {google_maps_link}\nBooking Status: {booking_status}",
         "qr_code": "Here is your booking QR code:"
     },
     "arabic": {
@@ -38,7 +38,7 @@ Langs = {
         ],
         "confirmation": "تم تأكيد الحجز\nحالة الحجز: نشط (Active)",
         # "cencellation": "تم إلغاء الحجز\nشكراً لتواصلك معنا",
-        "summary": "*Booking Summary:*\nName: {name}\nDestination: {destination}\nNo. of Passengers: {passengers}\nPickup Point: {google_maps_link}\nTotal Cost: {total_cost}\nBooking Status: {booking_status}",
+        "summary": "*Booking Summary:*\nName: {name}\nDestination: {destination}\nNo. of Passengers: {passengers}\nTotal Cost: {total_cost}\nPickup Point: {google_maps_link}\nBooking Status: {booking_status}",
         "qr_code": "هذا هو باركود الحجز الخاص بك:"
     },
     "urdu": {
@@ -59,7 +59,7 @@ Langs = {
         ],
         "confirmation": "ہے Active آپ کی بکنگ کی تصدیق ہوگئی ہے اور اب",
         # "cencellation": "Your reservation has been canceled.\nThank you for reaching out!",
-        "summary": "*Booking Summary:*\nName: {name}\nDestination: {destination}\nNo. of Passengers: {passengers}\nPickup Point: {google_maps_link}\nTotal Cost: {total_cost}\nBooking Status: {booking_status}",
+        "summary": "*Booking Summary:*\nName: {name}\nDestination: {destination}\nNo. of Passengers: {passengers}\nTotal Cost: {total_cost}\nPickup Point: {google_maps_link}\nBooking Status: {booking_status}",
         "qr_code": "ہ آپ کی بکنگ کا QR کوڈ ہے:"
     },
     "turkish": {
@@ -80,7 +80,7 @@ Langs = {
         ],
         "confirmation": "Rezervasyonunuz onaylandı ve Active konumunda.",
         # "cencellation": "Your reservation has been canceled.\nThank you for reaching out!",
-        "summary": "*Booking Summary:*\nName: {name}\nDestination: {destination}\nNo. of Passengers: {passengers}\nPickup Point: {google_maps_link}\nTotal Cost: {total_cost}\nBooking Status: {booking_status}",
+        "summary": "*Booking Summary:*\nName: {name}\nDestination: {destination}\nNo. of Passengers: {passengers}\nTotal Cost: {total_cost}\nPickup Point: {google_maps_link}\nBooking Status: {booking_status}",
         "qr_code": "İşte rezervasyonunuzun QR kodu:"
     },
     "french": {
@@ -101,11 +101,79 @@ Langs = {
         ],
         "confirmation": "Votre réservation est confirmée et désormais Active.",
         # "cencellation": "Your reservation has been canceled.\nThank you for reaching out!",
-        "summary": "*Booking Summary:*\nName: {name}\nDestination: {destination}\nNo. of Passengers: {passengers}\nPickup Point: {google_maps_link}\nTotal Cost: {total_cost}\nBooking Status: {booking_status}",
+        "summary": "*Booking Summary:*\nName: {name}\nDestination: {destination}\nNo. of Passengers: {passengers}\nTotal Cost: {total_cost}\nPickup Point: {google_maps_link}\nBooking Status: {booking_status}",
         "qr_code": "Voici votre code QR de réservation:"
     },
 }
 
 langs_list = [ "english", "arabic", "urdu", "turkish", "french" ]
-dests_list = [ "Prophet’s Mosque", "Quba Mosque" ]
+dests_list = [ "Prophet’s Masjid", "Quba Masjid" ]
 cc_list = ["confirm", "cancel"]
+
+locations = [
+    {
+        "link": "",
+        "latitude": 24.4728407,
+        "longitude": 39.6112426,
+    },
+    {
+        "link": "",
+        "latitude": 24.4728407,
+        "longitude": 39.6112426,
+    },
+    {
+        "link": "",
+        "latitude": 24.4728407,
+        "longitude": 39.6112426,
+    },
+    {
+        "link": "",
+        "latitude": 24.4728407,
+        "longitude": 39.6112426,
+    },
+    {
+        "link": "",
+        "latitude": 24.4728407,
+        "longitude": 39.6112426,
+    },
+    {
+        "link": "",
+        "latitude": 24.4728407,
+        "longitude": 39.6112426,
+    },
+    {
+        "link": "",
+        "latitude": 24.4728407,
+        "longitude": 39.6112426,
+    },
+    {
+        "link": "",
+        "latitude": 24.4728407,
+        "longitude": 39.6112426,
+    },
+    {
+        "link": "",
+        "latitude": 24.4728407,
+        "longitude": 39.6112426,
+    },
+    
+]
+
+
+# [26/01/2025, 6:34:04 PM] Ali Abdullah: https://maps.app.goo.gl/UKtixZgq8MME8cD5A?g_st=com.google.maps.preview.copy
+
+# [26/01/2025, 6:34:04 PM] Ali Abdullah: https://maps.app.goo.gl/gjks1oX262s1M3js8?g_st=ic
+
+# [26/01/2025, 6:34:04 PM] Ali Abdullah: https://maps.app.goo.gl/fbyyRAidC9cf3hrQ7?g_st=com.google.maps.preview.copy
+
+# [26/01/2025, 6:34:05 PM] Ali Abdullah: https://maps.app.goo.gl/YhZ5Ft2Vxr8oVdFo6?g_st=com.google.maps.preview.copy
+
+# [26/01/2025, 6:34:05 PM] Ali Abdullah: https://maps.app.goo.gl/ti2dMT5fPMduG7LG7?g_st=com.google.maps.preview.copy
+
+# [26/01/2025, 6:34:05 PM] Ali Abdullah: https://maps.app.goo.gl/ZihL1aQmLpFCpQFS8?g_st=com.google.maps.preview.copy
+
+# [26/01/2025, 6:34:06 PM] Ali Abdullah: https://maps.app.goo.gl/YGi89ZjJgZsjGo4R8?g_st=com.google.maps.preview.copy
+
+# [26/01/2025, 6:34:06 PM] Ali Abdullah: https://maps.app.goo.gl/Y2whhoHLimdgcBsS9?g_st=com.google.maps.preview.copy
+
+# [26/01/2025, 6:34:06 PM] Ali Abdullah: https://maps.app.goo.gl/4m7uNd3BWLjZb6fQ8?g_st=com.google.maps.preview.copy

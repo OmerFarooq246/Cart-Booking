@@ -3,22 +3,27 @@ from Flow import Flow
 import time
 
 staff_number = "923359950161"
-flow = Flow(staff_number)
-number = "923359950161"
-flow.init_conv(number)
 
-with ThreadPoolExecutor() as executor:
-    while True:
-        try:
-            e1 = executor.submit(flow.process_new_customers)
-            e2 = executor.submit(flow.handle_conv_flow)
-            print(e1)
-            print(e2)
-            time.sleep(3)
-        except Exception:
-            if Exception == KeyboardInterrupt:
-                flow.client.close()
-                print("Stopping execution...")
+# WhatsApp chat link
+whatsapp_url = "https://wa.me/+923359950161?text=Hello%20I%20need%20assistance"
+
+
+# flow = Flow(staff_number)
+# number = "923359950161"
+# flow.init_conv(number)
+
+# with ThreadPoolExecutor() as executor:
+#     while True:
+#         try:
+#             e1 = executor.submit(flow.process_new_customers)
+#             e2 = executor.submit(flow.handle_conv_flow)
+#             print(e1)
+#             print(e2)
+#             time.sleep(3)
+#         except Exception:
+#             if Exception == KeyboardInterrupt:
+#                 flow.client.close()
+#                 print("Stopping execution...")
 
 # flow = Flow()
 # flow.send_booking_id("67a25c7a212d05c4aba5d919")
@@ -33,6 +38,13 @@ with ThreadPoolExecutor() as executor:
 # wa_msg = WhatsApp_Messages(15)
 # number="923359950161"
 
+# flow = Flow(number)
+# ap = flow.get_nearest_ap()
+# msg = f"Nearest Pickup Point:\n{ap["link"]}"
+# print(msg)
+# res = wa_msg.send_text_message(number, msg)
+# print(res)
+# print(res.json())
 
 # # res = wa_msg.send_select_language_list(number)
 

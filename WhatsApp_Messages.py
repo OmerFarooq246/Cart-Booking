@@ -126,11 +126,11 @@ class WhatsApp_Messages():
                         "buttons": [
                             {
                                 "type": "reply",
-                                "reply": {"id": "Prophet’s Mosque", "title": Langs[lang]["destinations"][0]},
+                                "reply": {"id": "Prophet’s Masjid", "title": Langs[lang]["destinations"][0]},
                             },
                             {
                                 "type": "reply",
-                                "reply": {"id": "Quba Mosque", "title": Langs[lang]["destinations"][1]},
+                                "reply": {"id": "Quba Masjid", "title": Langs[lang]["destinations"][1]},
                             },
                         ]
                     },
@@ -141,7 +141,7 @@ class WhatsApp_Messages():
         except Exception as error:
             raise Exception(f"Error in send_select_destination = {error}")
     
-    def send_text_message(self, number, msg): #used for passengers prompt, 
+    def send_text_message(self, number, msg, preview=True):
         try:
             headers = {
                 "Authorization": f"Bearer {os.getenv("ACCESS_TOKEN")}",
@@ -152,7 +152,7 @@ class WhatsApp_Messages():
                 "to": f"+{number}",
                 "type": "text",
                 "text": {
-                    "preview_url": 1 == 1,
+                    "preview_url": preview,
                     "body": msg
                 },
             }

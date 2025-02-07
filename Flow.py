@@ -165,7 +165,9 @@ class Flow:
                                         lati = location["latitude"]
                                         long = location["longitude"]
                                         ap_location = self.get_nearest_ap(lati, long)
-                                        res = wa_msg.send_nearest_ap(number, customer["lang"], ap_location)
+                                        ap_msg = f"{Langs[customer["lang"]]["assembly_point"]}\n{ap_location["link"]}"
+                                        res = wa_msg.send_text_message(number, ap_msg)
+                                        # res = wa_msg.send_nearest_ap(number, customer["lang"], ap_location)
                                         res, total_cost = wa_msg.send_summary(number, customer["name"], customer["lang"], customer["dest"], customer["psgr"], ap_location["link"], "Awaiting Confirmation")
                                         res = wa_msg.send_cc_msg(number, customer["lang"])
                                         updates = {
@@ -209,9 +211,8 @@ class Flow:
                                         res = wa_msg.send_text_message(number, Langs[customer["lang"]]["confirmation"])
                                         qrUrl = self.send_booking_id(booking_id)
                                         res = wa_msg.send_qr_code(number, Langs[customer["lang"]]["qr_code"], qrUrl)
-                                        print(f"res of send qr code: {res}")
-                                        res = wa_msg.send_qr_code(self.staff_number, f"QR Code of {customer["name"]}", qrUrl)
-                                        print(f"res of send qr code staff: {res}")
+                                        #sending booking details to staff member
+                                        self.send_details_staff(booking)
                                     # else:
                                         # res = wa_msg.send_text_message(number, Langs[customer["lang"]]["cencellation"])
                                     res = self.DB.Cutomers.update_one({ "_id": customer["_id"] }, { "$set": { "status": "done" } })
@@ -236,6 +237,19 @@ class Flow:
         except Exception as error:
             print(f"error in send_booking_id: ", error)
 
+    def send_details_staff(self, booking):
+        details_dict = {
+            "name": booking["name"],
+            "destination": booking["destination"],
+            "passengers": booking["passengers"],
+            "total cost": booking["total_cost"],
+            "cutomer location": f"https://www.google.com/maps?q={booking["location"]["latitude"]},{booking["location"]["longitude"]}",
+            "pickup point": booking["ap_point"]["link"],
+            "time": booking["timestamp"].strftime("%H:%M, %d %B %Y")
+        }
+        details = self.dict_to_string(details_dict)
+        res = wa_msg.send_text_message(self.staff_number, details, preview=False)
+
     # def generate_qr_code(self, booking_id):
     #     try:
     #         data = f"{os.getenv("SERVE")}/api/booking/{booking_id}"
@@ -259,3 +273,13 @@ class Flow:
             "longitude": 39.6112426,
         }
         return location
+    
+    def dict_to_string(self, dict_obj):
+        string = ""
+        for key, value in dict_obj.items():
+            print(f"vale: {value}")
+            if isinstance(value, dict):
+                string += f"{key}:\n{self.dict_to_string(value)}"
+            else:
+                string += f"{key}: {value}\n"
+        return string
