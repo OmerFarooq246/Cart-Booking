@@ -1,45 +1,46 @@
-# from concurrent.futures import ThreadPoolExecutor
-# from Flow import Flow
-# import time
-
-# staff_number = "923359950161"
-# flow = Flow(staff_number)
-# number = "923359950161"
-# flow.init_conv(number)
-
-# with ThreadPoolExecutor() as executor:
-#     while True:
-#         try:
-#             e1 = executor.submit(flow.process_new_customers)
-#             e2 = executor.submit(flow.handle_conv_flow)
-#             print(e1)
-#             print(e2)
-#             time.sleep(3)
-#         except Exception:
-#             if Exception == KeyboardInterrupt:
-#                 flow.client.close()
-#                 print("Stopping execution...")
-
-# flow = Flow()
-# flow.send_booking_id("67a25c7a212d05c4aba5d919")
-# ap = flow.get_nearest_ap()
-# res = flow.DB.Messages.find({"number": "923359950161"})
-# flow.client.close()
-
-#-----------------------------------------------------------------
-
+from concurrent.futures import ThreadPoolExecutor
 from Flow import Flow
-import urllib.parse
-from dotenv import load_dotenv
-import os
-load_dotenv()
+import time
 
 staff_number = "923359950161"
 flow = Flow(staff_number)
-message = urllib.parse.quote("I would like to book a Cart from Jawlah")
-data = f"https://wa.me/{os.getenv("PHONE_NUMBER")}?text={message}"
-img_path = "/Users/traveler/Desktop/VSCODEs/Cart Booking/initial_qr_code.png"
-flow.generate_qr_code(data, img_path)
+number = "923359950161"
+flow.init_conv(number)
+
+with ThreadPoolExecutor() as executor:
+    while True:
+        try:
+            e1 = executor.submit(flow.process_new_customers)
+            e2 = executor.submit(flow.handle_conv_flow)
+            print(e1)
+            print(e2)
+            time.sleep(3)
+        except Exception:
+            if Exception == KeyboardInterrupt:
+                flow.client.close()
+                print("Stopping execution...")
+
+flow = Flow()
+flow.send_booking_id("67a25c7a212d05c4aba5d919")
+ap = flow.get_nearest_ap()
+res = flow.DB.Messages.find({"number": "923359950161"})
+flow.client.close()
+
+#-----------------------------------------------------------------
+
+# from Flow import Flow
+# import urllib.parse
+# from dotenv import load_dotenv
+# import os
+# load_dotenv()
+
+# staff_number = "923359950161"
+# flow = Flow(staff_number)
+# flow.get_nearest_ap(33.5534423, 73.1555217)
+# message = urllib.parse.quote("I would like to book a Cart from Jawlah")
+# data = f"https://wa.me/{os.getenv("PHONE_NUMBER")}?text={message}"
+# img_path = "/Users/traveler/Desktop/VSCODEs/Cart Booking/initial_qr_code.png"
+# flow.generate_qr_code(data, img_path)
 
 # +923359950161
 # +923200577069

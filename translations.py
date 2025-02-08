@@ -110,51 +110,63 @@ langs_list = [ "english", "arabic", "urdu", "turkish", "french" ]
 dests_list = [ "Prophet’s Masjid", "Quba Masjid" ]
 cc_list = ["confirm", "cancel"]
 
-locations = [
+locations_list = [
+    [24.4728407, 39.6112426], 
+    [24.4673040, 39.6045340],
+    [24.4578161, 39.6067037], 
+    [24.4611607, 39.6051872],
+    [24.463112, 39.6044342], 
+    [24.4416772, 39.613544],
+    [24.4536585, 39.6085651],
+    [24.4653923, 39.6053478], 
+    [24.4638563, 39.6078761],
+]
+
+locations_list_detailed = [
     {
-        "link": "",
+        "org_link": "https://maps.app.goo.gl/UKtixZgq8MME8cD5A?g_st=com.google.maps.preview.copy",
         "latitude": 24.4728407,
         "longitude": 39.6112426,
     },
     {
-        "link": "",
-        "latitude": 24.4728407,
-        "longitude": 39.6112426,
+        "org_link": "https://maps.app.goo.gl/gjks1oX262s1M3js8?g_st=ic",
+        "latitude": 24.4673040,
+        "longitude": 39.6045340,
     },
     {
-        "link": "",
-        "latitude": 24.4728407,
-        "longitude": 39.6112426,
+        "org_link": "https://maps.app.goo.gl/fbyyRAidC9cf3hrQ7?g_st=com.google.maps.preview.copy",
+        "latitude": 24.4578161,
+        "longitude": 39.6067037,
     },
     {
-        "link": "",
-        "latitude": 24.4728407,
-        "longitude": 39.6112426,
+        "org_link": "https://maps.app.goo.gl/YhZ5Ft2Vxr8oVdFo6?g_st=com.google.maps.preview.copy",
+        "latitude": 24.4611607,
+        "longitude": 39.6051872,
     },
     {
-        "link": "",
-        "latitude": 24.4728407,
-        "longitude": 39.6112426,
+        "org_link": "https://maps.app.goo.gl/ti2dMT5fPMduG7LG7?g_st=com.google.maps.preview.copy",
+        "latitude": 24.463112,
+        "longitude": 39.6044342,
     },
     {
-        "link": "",
-        "latitude": 24.4728407,
-        "longitude": 39.6112426,
+        "org_link": "https://maps.app.goo.gl/ZihL1aQmLpFCpQFS8?g_st=com.google.maps.preview.copy",
+        "latitude": 24.4416772,
+        "longitude": 39.613544,
     },
     {
-        "link": "",
-        "latitude": 24.4728407,
-        "longitude": 39.6112426,
+        "org_link": "https://maps.app.goo.gl/YGi89ZjJgZsjGo4R8?g_st=com.google.maps.preview.copy",
+        "latitude": 24.4536585,
+        "longitude": 39.6085651,
     },
     {
-        "link": "",
-        "latitude": 24.4728407,
-        "longitude": 39.6112426,
+        "org_link": "https://maps.app.goo.gl/Y2whhoHLimdgcBsS9?g_st=com.google.maps.preview.copy",
+        "latitude": 24.4653923,
+        "longitude": 39.6053478,
     },
     {
-        "link": "",
-        "latitude": 24.4728407,
-        "longitude": 39.6112426,
+        "org_link": "https://maps.app.goo.gl/4m7uNd3BWLjZb6fQ8?g_st=com.google.maps.preview.copy",
+        "latitude": 24.4638563,
+        "longitude": 39.6078761,
     },
     
 ]
@@ -162,18 +174,26 @@ locations = [
 
 # [26/01/2025, 6:34:04 PM] Ali Abdullah: https://maps.app.goo.gl/UKtixZgq8MME8cD5A?g_st=com.google.maps.preview.copy
 
+
 # [26/01/2025, 6:34:04 PM] Ali Abdullah: https://maps.app.goo.gl/gjks1oX262s1M3js8?g_st=ic
+
 
 # [26/01/2025, 6:34:04 PM] Ali Abdullah: https://maps.app.goo.gl/fbyyRAidC9cf3hrQ7?g_st=com.google.maps.preview.copy
 
+
 # [26/01/2025, 6:34:05 PM] Ali Abdullah: https://maps.app.goo.gl/YhZ5Ft2Vxr8oVdFo6?g_st=com.google.maps.preview.copy
+
 
 # [26/01/2025, 6:34:05 PM] Ali Abdullah: https://maps.app.goo.gl/ti2dMT5fPMduG7LG7?g_st=com.google.maps.preview.copy
 
+
 # [26/01/2025, 6:34:05 PM] Ali Abdullah: https://maps.app.goo.gl/ZihL1aQmLpFCpQFS8?g_st=com.google.maps.preview.copy
+
 
 # [26/01/2025, 6:34:06 PM] Ali Abdullah: https://maps.app.goo.gl/YGi89ZjJgZsjGo4R8?g_st=com.google.maps.preview.copy
 
+
 # [26/01/2025, 6:34:06 PM] Ali Abdullah: https://maps.app.goo.gl/Y2whhoHLimdgcBsS9?g_st=com.google.maps.preview.copy
+
 
 # [26/01/2025, 6:34:06 PM] Ali Abdullah: https://maps.app.goo.gl/4m7uNd3BWLjZb6fQ8?g_st=com.google.maps.preview.copy

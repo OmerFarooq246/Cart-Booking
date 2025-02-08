@@ -5,9 +5,10 @@ from pymongo.server_api import ServerApi
 import certifi
 import requests
 from WhatsApp_Messages import WhatsApp_Messages
-from translations import langs_list, Langs, cc_list, dests_list
+from translations import langs_list, Langs, cc_list, dests_list, locations_list
 from datetime import datetime
 import qrcode
+import numpy as np
 
 '''
 customer.status = 
@@ -166,14 +167,21 @@ class Flow:
                                         lati = location["latitude"]
                                         long = location["longitude"]
                                         ap_location = self.get_nearest_ap(lati, long)
-                                        ap_msg = f"{Langs[customer["lang"]]["assembly_point"]}\n{ap_location["link"]}"
+                                        ap_maps_link = f"https://www.google.com/maps?q={ap_location[0]},{ap_location[1]}"
+                                        loc_obj = {
+                                            "link": ap_maps_link,
+                                            "latitude": ap_location[0],
+                                            "longitude": ap_location[1],
+                                        }
+                                        print(f"loc_obj= {loc_obj}")
+                                        print(f"loc_obj[link]: {loc_obj["link"]}")
+                                        ap_msg = f"{Langs[customer["lang"]]["assembly_point"]}\n{ap_maps_link}"
                                         res = wa_msg.send_text_message(number, ap_msg)
-                                        # res = wa_msg.send_nearest_ap(number, customer["lang"], ap_location)
-                                        res, total_cost = wa_msg.send_summary(number, customer["name"], customer["lang"], customer["dest"], customer["psgr"], ap_location["link"], "Awaiting Confirmation")
+                                        res, total_cost = wa_msg.send_summary(number, customer["name"], customer["lang"], customer["dest"], customer["psgr"], loc_obj["link"], "Awaiting Confirmation")
                                         res = wa_msg.send_cc_msg(number, customer["lang"])
                                         updates = {
                                             "status": "coca",
-                                            "nearest_ap": ap_location,
+                                            "nearest_ap": loc_obj,
                                             "location": location,
                                             "total_cost": total_cost
                                         }
@@ -251,13 +259,33 @@ class Flow:
         details = self.dict_to_string(details_dict)
         res = wa_msg.send_text_message(self.staff_number, details, preview=False)
 
-    def get_nearest_ap(self, lati="", long=""):
-        location = {
-            "link": "https://www.google.com/maps?q=24.4728407,39.6112426&entry=gps&lucs=,94242568,94224825,94227247,94227248,47071704,47069508,94218641,94203019,47084304,94208458,94208447&g_ep=CAISEjI0LjUwLjAuNzA0NDI3ODkxMBgAIJ6dCipjLDk0MjQyNTY4LDk0MjI0ODI1LDk0MjI3MjQ3LDk0MjI3MjQ4LDQ3MDcxNzA0LDQ3MDY5NTA4LDk0MjE4NjQxLDk0MjAzMDE5LDQ3MDg0MzA0LDk0MjA4NDU4LDk0MjA4NDQ3QgJTQQ%3D%3D&g_st=com.google.maps.preview.copy",
-            "latitude": 24.4728407,
-            "longitude": 39.6112426,
-        }
-        return location
+    def get_nearest_ap(self, lati, long):
+        try:
+            all_locations = locations_list
+            all_locations.append([long, lati])
+            base_url = os.getenv("FOOT_WALKING_URL")
+            key = os.getenv("OPEN_ROUTE_KEY")
+            headers = {
+               'Accept': 'application/json, application/geo+json, application/gpx+xml, img/png; charset=utf-8',
+                'Authorization': key,
+                'Content-Type': 'application/json; charset=utf-8'
+            }
+            body = {
+                "locations": all_locations,
+                "destinations": [len(all_locations)-1],
+                "metrics":["distance"]
+            }
+            res = requests.post(base_url, json=body, headers=headers)
+            print(f"res of get_nearest_ap = {res.json()["distances"]}")
+            distances = np.array(res.json()["distances"]).squeeze()
+            print(f"distances: {distances}")
+            min_index = np.argmin(distances[:-1])
+            print(f"min_index: {min_index}")
+            min_loc = locations_list[min_index]
+            print(f"min_loc: {min_loc}")
+            return min_loc
+        except Exception as error:
+            print(f"error in get_nearest_ap: ", error)
     
     def dict_to_string(self, dict_obj):
         string = ""
