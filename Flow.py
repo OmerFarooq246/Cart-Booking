@@ -7,6 +7,7 @@ import requests
 from WhatsApp_Messages import WhatsApp_Messages
 from translations import langs_list, Langs, cc_list, dests_list
 from datetime import datetime
+import qrcode
 
 '''
 customer.status = 
@@ -250,22 +251,6 @@ class Flow:
         details = self.dict_to_string(details_dict)
         res = wa_msg.send_text_message(self.staff_number, details, preview=False)
 
-    # def generate_qr_code(self, booking_id):
-    #     try:
-    #         data = f"{os.getenv("SERVE")}/api/booking/{booking_id}"
-    #         qr = qrcode.QRCode(
-    #             version=1,
-    #             error_correction=qrcode.constants.ERROR_CORRECT_L,
-    #             box_size=10,
-    #             border=4,
-    #         )
-    #         qr.add_data(data)
-    #         qr.make(fit=True)
-    #         img = qr.make_image(fill_color="black", back_color="white")
-    #         files = {'file': (f"{booking_id}.png", img, 'image/png')}
-    #     except Exception as error:
-    #         print(f"error in generating qr code: ", error)
-
     def get_nearest_ap(self, lati="", long=""):
         location = {
             "link": "https://www.google.com/maps?q=24.4728407,39.6112426&entry=gps&lucs=,94242568,94224825,94227247,94227248,47071704,47069508,94218641,94203019,47084304,94208458,94208447&g_ep=CAISEjI0LjUwLjAuNzA0NDI3ODkxMBgAIJ6dCipjLDk0MjQyNTY4LDk0MjI0ODI1LDk0MjI3MjQ3LDk0MjI3MjQ4LDQ3MDcxNzA0LDQ3MDY5NTA4LDk0MjE4NjQxLDk0MjAzMDE5LDQ3MDg0MzA0LDk0MjA4NDU4LDk0MjA4NDQ3QgJTQQ%3D%3D&g_st=com.google.maps.preview.copy",
@@ -283,3 +268,18 @@ class Flow:
             else:
                 string += f"{key}: {value}\n"
         return string
+    
+    def generate_qr_code(self, data, img_path):
+        try:
+            qr = qrcode.QRCode(
+                version=1,
+                error_correction=qrcode.constants.ERROR_CORRECT_L,
+                box_size=10,
+                border=4,
+            )
+            qr.add_data(data)
+            qr.make(fit=True)
+            img = qr.make_image(fill_color="black", back_color="white")
+            img.save(img_path)
+        except Exception as error:
+            print(f"error in generating qr code: ", error)

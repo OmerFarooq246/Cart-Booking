@@ -1,13 +1,8 @@
-from concurrent.futures import ThreadPoolExecutor
-from Flow import Flow
-import time
+# from concurrent.futures import ThreadPoolExecutor
+# from Flow import Flow
+# import time
 
-staff_number = "923359950161"
-
-# WhatsApp chat link
-whatsapp_url = "https://wa.me/+923359950161?text=Hello%20I%20need%20assistance"
-
-
+# staff_number = "923359950161"
 # flow = Flow(staff_number)
 # number = "923359950161"
 # flow.init_conv(number)
@@ -30,6 +25,21 @@ whatsapp_url = "https://wa.me/+923359950161?text=Hello%20I%20need%20assistance"
 # ap = flow.get_nearest_ap()
 # res = flow.DB.Messages.find({"number": "923359950161"})
 # flow.client.close()
+
+#-----------------------------------------------------------------
+
+from Flow import Flow
+import urllib.parse
+from dotenv import load_dotenv
+import os
+load_dotenv()
+
+staff_number = "923359950161"
+flow = Flow(staff_number)
+message = urllib.parse.quote("I would like to book a Cart from Jawlah")
+data = f"https://wa.me/{os.getenv("PHONE_NUMBER")}?text={message}"
+img_path = "/Users/traveler/Desktop/VSCODEs/Cart Booking/initial_qr_code.png"
+flow.generate_qr_code(data, img_path)
 
 # +923359950161
 # +923200577069
