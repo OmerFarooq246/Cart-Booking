@@ -9,6 +9,7 @@ from translations import langs_list, Langs, cc_list, dests_list, locations_list
 from datetime import datetime
 import qrcode
 import numpy as np
+from PIL import Image
 
 '''
 customer.status = 
@@ -27,10 +28,11 @@ load_dotenv()
 wa_msg = WhatsApp_Messages(15)
 
 class Flow:
-    def __init__(self, staff_number):
+    def __init__(self, staff_number, scan_msg):
         self.client = MongoClient(os.getenv("MONGO_URI"), server_api=ServerApi('1'), tls=True, tlsCAFile=certifi.where())
         self.DB = self.client["Cart_Booking"]
         self.staff_number = staff_number
+        self.scan_msg = scan_msg
 
     def init_conv(self, number):
         try:
@@ -38,53 +40,53 @@ class Flow:
         except Exception as error:
             print("error in init_conv:", error)
 
-    def handle_conv_init(self, number):
-        try:
-            res = self.DB.Cutomers.find_one({ "number" : number })
-            if res:
-                if res["status"] == "done":
-                    entry = {
-                        "number": number,
-                        "name": res["name"],
-                        "status": "lang"
-                    }
-                    res = self.DB.Cutomers.insert_one(entry)
-                    res = wa_msg.send_select_language_list(number)
-                else:
-                    print("Process Failure, New Conv init with previous not done")
-            else:
-                entry = {
-                    "number": number,
-                    "status": "new"
-                }
-                res = self.DB.Cutomers.insert_one(entry)
-                res = wa_msg.send_welcome_message(number)
-        except Exception as error:
-            print(f"Error in handle_conv_init = {error}")
+    # def handle_conv_init(self, number):
+    #     try:
+    #         res = self.DB.Cutomers.find_one({ "number" : number })
+    #         if res:
+    #             if res["status"] == "done":
+    #                 entry = {
+    #                     "number": number,
+    #                     "name": res["name"],
+    #                     "status": "lang"
+    #                 }
+    #                 res = self.DB.Cutomers.insert_one(entry)
+    #                 res = wa_msg.send_select_language_list(number)
+    #             else:
+    #                 print("Process Failure, New Conv init with previous not done")
+    #         else:
+    #             entry = {
+    #                 "number": number,
+    #                 "status": "new"
+    #             }
+    #             res = self.DB.Cutomers.insert_one(entry)
+    #             res = wa_msg.send_welcome_message(number)
+    #     except Exception as error:
+    #         print(f"Error in handle_conv_init = {error}")
 
-    def process_new_customers(self): #meant to run continuously in a separate thread
-        try:
-            msgs = self.DB.Messages.find({ "read": False })
-            if msgs:
-                for msg in msgs:
-                    number = msg["from"]
-                    new_customer = list(self.DB.Cutomers.find({ "number" : number, "status": "new" }))
-                    print(f"new_customer: {new_customer}")
-                    if new_customer:
-                        if len(new_customer) > 1:
-                            print("Process Failure, More than one NEW entries for a number")
-                        else:
-                            new_customer = new_customer[0]
-                            print(f"new_customer: {new_customer}")
-                            print("reply to welcome msg found")
-                            name = msg["msg"]
-                            res = wa_msg.send_select_language_list(number)
-                            res = self.DB.Cutomers.update_one({ "_id": new_customer["_id"] }, { "$set": { "name": name, "status": "lang" } })
-                            res = self.DB.Messages.update_one({ "_id": msg["_id"] }, { "$set": { "read": True } })
-            else:
-                print("no unread messages")
-        except Exception as error:
-            print(f"Error in process_new_customers = {error}")
+    # def process_new_customers(self): #meant to run continuously in a separate thread
+    #     try:
+    #         msgs = self.DB.Messages.find({ "read": False })
+    #         if msgs:
+    #             for msg in msgs:
+    #                 number = msg["from"]
+    #                 new_customer = list(self.DB.Cutomers.find({ "number" : number, "status": "new" }))
+    #                 print(f"new_customer: {new_customer}")
+    #                 if new_customer:
+    #                     if len(new_customer) > 1:
+    #                         print("Process Failure, More than one NEW entries for a number")
+    #                     else:
+    #                         new_customer = new_customer[0]
+    #                         print(f"new_customer: {new_customer}")
+    #                         print("reply to welcome msg found")
+    #                         name = msg["msg"]
+    #                         res = wa_msg.send_select_language_list(number)
+    #                         res = self.DB.Cutomers.update_one({ "_id": new_customer["_id"] }, { "$set": { "name": name, "status": "lang" } })
+    #                         res = self.DB.Messages.update_one({ "_id": msg["_id"] }, { "$set": { "read": True } })
+    #         else:
+    #             print("no unread messages")
+    #     except Exception as error:
+    #         print(f"Error in process_new_customers = {error}")
 
     def handle_conv_flow(self):
         try:
@@ -93,7 +95,26 @@ class Flow:
                 for msg in msgs:
                     res = self.DB.Messages.update_one({ "_id": msg["_id"] }, { "$set": { "read": True } })
                     number = msg["from"]
-                    customer_list = list(self.DB.Cutomers.find({ "number" : number, "status": { "$ne": "new" } }))
+                    # customer_list = list(self.DB.Cutomers.find({ "number" : number, "status": { "$ne": "new" } }))
+                    customer_list = list(self.DB.Cutomers.find({ "number" : number}))
+                    
+                    if msg["type"] == "text":
+                        if msg["msg"] == self.scan_msg:
+                            print(f"new scan found: +{number}")
+                            result = self.DB.Cutomers.update_many({"number": number}, {"$set": {"status": "done"}})
+                            new_conv_msg = "Starting a new booking, previous one has been cancelled."
+                            res = wa_msg.send_text_message(number, new_conv_msg)
+                            print(res.json())
+                            entry = {
+                                "number": number,
+                                "status": "lang"
+                            }
+                            res = self.DB.Cutomers.insert_one(entry)
+                            res = wa_msg.send_select_language_list(number)
+                            print(res.json())
+                            print("handled new scan")
+                            continue
+                    
                     print(f"customer_list: {customer_list}")
                     if customer_list:
                         customer_start = list(filter(lambda item: item["status"] == "start", customer_list))
@@ -133,6 +154,7 @@ class Flow:
                                     res = wa_msg.send_text_message(number, select_lan_emphasis)
                                 else:
                                     res = self.DB.Cutomers.update_one({ "_id": customer["_id"] }, { "$set": { "lang": selected_lang } })
+                                    res = wa_msg.send_text_message(number, Langs[selected_lang]["introduction"])
                                     res = wa_msg.send_select_destination(number, selected_lang)
                                     res = self.DB.Cutomers.update_one({ "_id": customer["_id"] }, { "$set": { "status": "dest" } })
                             elif customer["status"] == "dest":
@@ -177,7 +199,7 @@ class Flow:
                                         print(f"loc_obj[link]: {loc_obj["link"]}")
                                         ap_msg = f"{Langs[customer["lang"]]["assembly_point"]}\n{ap_maps_link}"
                                         res = wa_msg.send_text_message(number, ap_msg)
-                                        res, total_cost = wa_msg.send_summary(number, customer["name"], customer["lang"], customer["dest"], customer["psgr"], loc_obj["link"], "Awaiting Confirmation")
+                                        res, total_cost = wa_msg.send_summary(number, customer["lang"], customer["dest"], customer["psgr"], loc_obj["link"], "Awaiting Confirmation")
                                         res = wa_msg.send_cc_msg(number, customer["lang"])
                                         updates = {
                                             "status": "coca",
@@ -206,7 +228,7 @@ class Flow:
                                     if result == "confirm":
                                         booking = {
                                             "customer_id": customer["_id"],
-                                            "name": customer["name"],
+                                            "number": customer["number"],
                                             "language": customer["lang"],
                                             "destination": customer["dest"],
                                             "passengers": customer["psgr"],
@@ -248,7 +270,7 @@ class Flow:
 
     def send_details_staff(self, booking):
         details_dict = {
-            "name": booking["name"],
+            "number": booking["number"],
             "destination": booking["destination"],
             "passengers": booking["passengers"],
             "total cost": booking["total_cost"],
@@ -297,17 +319,31 @@ class Flow:
                 string += f"{key}: {value}\n"
         return string
     
-    def generate_qr_code(self, data, img_path):
+    def generate_qr_code(self, data, img_path, logo_path=None, logo_scale=0.2):
         try:
             qr = qrcode.QRCode(
-                version=1,
-                error_correction=qrcode.constants.ERROR_CORRECT_L,
+                version=5,
+                error_correction=qrcode.constants.ERROR_CORRECT_H,
                 box_size=10,
                 border=4,
             )
             qr.add_data(data)
             qr.make(fit=True)
-            img = qr.make_image(fill_color="black", back_color="white")
+            img = qr.make_image(fill_color="black", back_color="white").convert("RGBA")
+            if logo_path:
+                logo = Image.open(logo_path)
+                qr_width, qr_height = img.size
+                max_logo_size = int(min(qr_width, qr_height) * logo_scale)  # 20% of QR code size
+                logo = logo.resize((max_logo_size, max_logo_size), Image.LANCZOS)
+
+                # Calculate logo position (center)
+                logo_x = (qr_width - max_logo_size) // 2
+                logo_y = (qr_height - max_logo_size) // 2
+
+                # Paste logo onto QR code
+                img.paste(logo, (logo_x, logo_y), logo)
+            else:
+                pass
             img.save(img_path)
         except Exception as error:
             print(f"error in generating qr code: ", error)

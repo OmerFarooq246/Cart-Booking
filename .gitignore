@@ -4,3 +4,4 @@ text_msg.txt
 __pycache__
 temp.ipynb
 qr_codes
+*.png

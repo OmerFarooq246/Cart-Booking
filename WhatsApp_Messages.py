@@ -204,21 +204,12 @@ class WhatsApp_Messages():
                     "name": Langs[lang]["assembly_point"]
                 }
             }
-            # data = {
-            #     "messaging_product": "whatsapp",
-            #     "recipient_type": "individual",
-            #     "to": f"+{number}",
-            #     "type": "text",
-            #     "text": {
-            #         "body": Langs[lang]["assembly_point"].format(google_maps_link=link)
-            #     }
-            # }
             res = requests.post(self.url, headers=headers, json=data)
             return res
         except Exception as error:
             raise Exception(f"Error in send_nearest_ap = {error}")
     
-    def send_summary(self, number, name, lang, destination, passengers, google_maps_link, booking_status):
+    def send_summary(self, number, lang, destination, passengers, google_maps_link, booking_status):
         try:
             total_cost = self.cost_per_passenger * passengers
             headers = {
@@ -233,7 +224,7 @@ class WhatsApp_Messages():
                 "text": {
                     # "preview_url": google_maps_link,
                     "body": Langs[lang]["summary"].format(
-                        name=name,
+                        number=f"+{number}",
                         destination=destination,
                         passengers=passengers,
                         google_maps_link=google_maps_link,

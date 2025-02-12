@@ -17,7 +17,7 @@ Langs = {
         ],
         "confirmation": "Your reservation is confirmed and now Active.",
         # "cencellation": "Your reservation has been canceled.\nThank you for reaching out!",
-        "summary": "*Booking Summary:*\nName: {name}\nDestination: {destination}\nNo. of Passengers: {passengers}\nTotal Cost: {total_cost}\nPickup Point: {google_maps_link}\nBooking Status: {booking_status}",
+        "summary": "*Booking Summary:*\nPhone Number: {number}\nDestination: {destination}\nNo. of Passengers: {passengers}\nTotal Cost: {total_cost}\nPickup Point: {google_maps_link}\nBooking Status: {booking_status}",
         "qr_code": "Here is your booking QR code:"
     },
     "arabic": {
@@ -38,7 +38,7 @@ Langs = {
         ],
         "confirmation": "تم تأكيد الحجز\nحالة الحجز: نشط (Active)",
         # "cencellation": "تم إلغاء الحجز\nشكراً لتواصلك معنا",
-        "summary": "*Booking Summary:*\nName: {name}\nDestination: {destination}\nNo. of Passengers: {passengers}\nTotal Cost: {total_cost}\nPickup Point: {google_maps_link}\nBooking Status: {booking_status}",
+        "summary": "*Booking Summary:*\nPhone Number: {number}\nDestination: {destination}\nNo. of Passengers: {passengers}\nTotal Cost: {total_cost}\nPickup Point: {google_maps_link}\nBooking Status: {booking_status}",
         "qr_code": "هذا هو باركود الحجز الخاص بك:"
     },
     "urdu": {
@@ -59,7 +59,7 @@ Langs = {
         ],
         "confirmation": "ہے Active آپ کی بکنگ کی تصدیق ہوگئی ہے اور اب",
         # "cencellation": "Your reservation has been canceled.\nThank you for reaching out!",
-        "summary": "*Booking Summary:*\nName: {name}\nDestination: {destination}\nNo. of Passengers: {passengers}\nTotal Cost: {total_cost}\nPickup Point: {google_maps_link}\nBooking Status: {booking_status}",
+        "summary": "*Booking Summary:*\nPhone Number: {number}\nDestination: {destination}\nNo. of Passengers: {passengers}\nTotal Cost: {total_cost}\nPickup Point: {google_maps_link}\nBooking Status: {booking_status}",
         "qr_code": "ہ آپ کی بکنگ کا QR کوڈ ہے:"
     },
     "turkish": {
@@ -80,7 +80,7 @@ Langs = {
         ],
         "confirmation": "Rezervasyonunuz onaylandı ve Active konumunda.",
         # "cencellation": "Your reservation has been canceled.\nThank you for reaching out!",
-        "summary": "*Booking Summary:*\nName: {name}\nDestination: {destination}\nNo. of Passengers: {passengers}\nTotal Cost: {total_cost}\nPickup Point: {google_maps_link}\nBooking Status: {booking_status}",
+        "summary": "*Booking Summary:*\nPhone Number: {number}\nDestination: {destination}\nNo. of Passengers: {passengers}\nTotal Cost: {total_cost}\nPickup Point: {google_maps_link}\nBooking Status: {booking_status}",
         "qr_code": "İşte rezervasyonunuzun QR kodu:"
     },
     "french": {
@@ -101,7 +101,7 @@ Langs = {
         ],
         "confirmation": "Votre réservation est confirmée et désormais Active.",
         # "cencellation": "Your reservation has been canceled.\nThank you for reaching out!",
-        "summary": "*Booking Summary:*\nName: {name}\nDestination: {destination}\nNo. of Passengers: {passengers}\nTotal Cost: {total_cost}\nPickup Point: {google_maps_link}\nBooking Status: {booking_status}",
+        "summary": "*Booking Summary:*\nPhone Number: {number}\nDestination: {destination}\nNo. of Passengers: {passengers}\nTotal Cost: {total_cost}\nPickup Point: {google_maps_link}\nBooking Status: {booking_status}",
         "qr_code": "Voici votre code QR de réservation:"
     },
 }
