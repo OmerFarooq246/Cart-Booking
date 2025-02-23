@@ -17,8 +17,14 @@ Langs = {
         ],
         "confirmation": "Your reservation is confirmed and now Active.",
         # "cencellation": "Your reservation has been canceled.\nThank you for reaching out!",
-        "summary": "*Booking Summary:*\nPhone Number: {number}\nDestination: {destination}\nNo. of Passengers: {passengers}\nTotal Cost: {total_cost}\nPickup Point: {google_maps_link}\nBooking Status: {booking_status}",
-        "qr_code": "Here is your booking QR code:"
+        "summary": "*Booking Summary:*\nPhone Number: {number}\nDestination: {destination}\nNo. of Passengers: {passengers}\nTotal Cost: {total_cost}\nPickup Point: {google_maps_link}\nBooking Status: Awaiting Confirmation",
+        "qr_code": "Here is your booking QR code:",
+        "new_scan": "Starting a new booking, previous one has been cancelled.",
+        "lang_emph": "Please select language from the list.",
+        "dest_emph": "Please select destination.",
+        "psgr_emph": "Please enter a number.",
+        "loc_emph": "Please send your location.",
+        "coca_emph": "Please select confirm or cancel.",
     },
     "arabic": {
         "introduction": "مرحباً بك في جولة، الخدمة التي تتيح لك التنقل بسهولة وراحة باستخدام عربات كهربائية لنقلك من وإلى المسجد النبوي ومسجد قباء",
@@ -38,8 +44,14 @@ Langs = {
         ],
         "confirmation": "تم تأكيد الحجز\nحالة الحجز: نشط (Active)",
         # "cencellation": "تم إلغاء الحجز\nشكراً لتواصلك معنا",
-        "summary": "*Booking Summary:*\nPhone Number: {number}\nDestination: {destination}\nNo. of Passengers: {passengers}\nTotal Cost: {total_cost}\nPickup Point: {google_maps_link}\nBooking Status: {booking_status}",
-        "qr_code": "هذا هو باركود الحجز الخاص بك:"
+        "summary": "*ملخص الحجز:*\nرقم الهاتف: {number}\الوجهة: {destination}\nعدد الركاب: {passengers}\nالتكلفة الإجمالية: {total_cost}\nنقطة الالتقاء: {google_maps_link}\nحالة الحجز:  في انتظار التأكيد",
+        "qr_code": "هذا هو باركود الحجز الخاص بك:",
+        "new_scan": "تم بدء حجز جديد، الحجز السابق تم إلغاؤه.",
+        "lang_emph": "فضلاً اختر اللغة من القائمة.",
+        "dest_emph": "فضلاً اختر الوجهة.",
+        "psgr_emph": "فضلاً أدخل رقمًا.",
+        "loc_emph": "فضلاً أرسل موقعك.",
+        "coca_emph": "فضلاً اختر تأكيد أو إلغاء.",
     },
     "urdu": {
         "introduction": "جولة میں خوش آمدید، جہاں آپ کو بجلی سے چلنے والی گاڑیوں کے ذریعے مسجد نبوی اور مسجد قباء تک بآسانی اور آرام سے پہنچایا جاتا ہے۔",
@@ -59,8 +71,14 @@ Langs = {
         ],
         "confirmation": "ہے Active آپ کی بکنگ کی تصدیق ہوگئی ہے اور اب",
         # "cencellation": "Your reservation has been canceled.\nThank you for reaching out!",
-        "summary": "*Booking Summary:*\nPhone Number: {number}\nDestination: {destination}\nNo. of Passengers: {passengers}\nTotal Cost: {total_cost}\nPickup Point: {google_maps_link}\nBooking Status: {booking_status}",
-        "qr_code": "ہ آپ کی بکنگ کا QR کوڈ ہے:"
+        "summary": "*بکنگ کا خلاصہ:*\nفون نمبر: {number}\nمنزل: {destination}\nمسافروں کی تعداد: {passengers}\nکل لاگت: {total_cost}\nپک اپ پوائنٹ: {google_maps_link}\nبکنگ کی حیثیت: تصدیق کا انتظار",
+        "qr_code": "ہ آپ کی بکنگ کا QR کوڈ ہے:",
+        "new_scan": "نئی بکنگ شروع کردی گئی، پچھلی بکنگ منسوخ کردی گئی ہے۔",
+        "lang_emph": "براہ کرم فہرست سے زبان منتخب کریں۔",
+        "dest_emph": "براہ کرم منزل منتخب کریں۔",
+        "psgr_emph": "براہ کرم نمبر درج کریں۔",
+        "loc_emph": "براہ کرم اپنا مقام بھیجیں۔",
+        "coca_emph": "براہ کرم تصدیق یا منسوخی کا انتخاب کریں۔",
     },
     "turkish": {
         "introduction": "Jawlah'a hoş geldiniz. Elektrikli arabalarla Mescid-i Nebevi ve Kuba Mescidi arasında kolay ve rahat ulaşım sağlıyoruz.",
@@ -80,8 +98,14 @@ Langs = {
         ],
         "confirmation": "Rezervasyonunuz onaylandı ve Active konumunda.",
         # "cencellation": "Your reservation has been canceled.\nThank you for reaching out!",
-        "summary": "*Booking Summary:*\nPhone Number: {number}\nDestination: {destination}\nNo. of Passengers: {passengers}\nTotal Cost: {total_cost}\nPickup Point: {google_maps_link}\nBooking Status: {booking_status}",
-        "qr_code": "İşte rezervasyonunuzun QR kodu:"
+        "summary": "*Rezervasyon Özeti:*\nTelefon Numarası: {number}\nHedef: {destination}\nYolcu Sayısı: {passengers}\nToplam Ücret: {total_cost}\nToplama Noktası: {google_maps_link}\nRezervasyon Durumu: Onay Bekleniyor",
+        "qr_code": "İşte rezervasyonunuzun QR kodu:",
+        "new_scan": "Yeni bir rezervasyon başlatıldı, önceki rezervasyon iptal edildi.",
+        "lang_emph": "Lütfen listeden dili seçin.",
+        "dest_emph": "Lütfen hedefinizi seçin.",
+        "psgr_emph": "Lütfen bir sayı girin.",
+        "loc_emph": "Lütfen konumunuzu gönderin.",
+        "coca_emph": "Lütfen onayla veya iptal et seçeneğini seçin.",
     },
     "french": {
         "introduction": "Bienvenue chez Jawlah, un service qui propose un transport facile et confortable en voiturette électrique entre la Mosquée du Prophète et la Mosquée de Quba.",
@@ -101,8 +125,14 @@ Langs = {
         ],
         "confirmation": "Votre réservation est confirmée et désormais Active.",
         # "cencellation": "Your reservation has been canceled.\nThank you for reaching out!",
-        "summary": "*Booking Summary:*\nPhone Number: {number}\nDestination: {destination}\nNo. of Passengers: {passengers}\nTotal Cost: {total_cost}\nPickup Point: {google_maps_link}\nBooking Status: {booking_status}",
-        "qr_code": "Voici votre code QR de réservation:"
+        "summary": "*Résumé de la réservation:*\nNuméro de téléphone: {number}\nDestination: {destination}\nNombre de passagers: {passengers}\nCoût total: {total_cost}\nPoint de prise en charge: {google_maps_link}\nStatut de la réservation: En attente de confirmation",
+        "qr_code": "Voici votre code QR de réservation:",
+        "new_scan": "Une nouvelle réservation a été lancée, la précédente a été annulée.",
+        "lang_emph": "Veuillez sélectionner une langue dans la liste.",
+        "dest_emph": "Veuillez sélectionner une destination.",
+        "psgr_emph": "Veuillez entrer un numéro.",
+        "loc_emph": "Veuillez envoyer votre position.",
+        "coca_emph": "Veuillez sélectionner confirmer ou annuler.",
     },
 }
 
@@ -170,30 +200,3 @@ locations_list_detailed = [
     },
     
 ]
-
-
-# [26/01/2025, 6:34:04 PM] Ali Abdullah: https://maps.app.goo.gl/UKtixZgq8MME8cD5A?g_st=com.google.maps.preview.copy
-
-
-# [26/01/2025, 6:34:04 PM] Ali Abdullah: https://maps.app.goo.gl/gjks1oX262s1M3js8?g_st=ic
-
-
-# [26/01/2025, 6:34:04 PM] Ali Abdullah: https://maps.app.goo.gl/fbyyRAidC9cf3hrQ7?g_st=com.google.maps.preview.copy
-
-
-# [26/01/2025, 6:34:05 PM] Ali Abdullah: https://maps.app.goo.gl/YhZ5Ft2Vxr8oVdFo6?g_st=com.google.maps.preview.copy
-
-
-# [26/01/2025, 6:34:05 PM] Ali Abdullah: https://maps.app.goo.gl/ti2dMT5fPMduG7LG7?g_st=com.google.maps.preview.copy
-
-
-# [26/01/2025, 6:34:05 PM] Ali Abdullah: https://maps.app.goo.gl/ZihL1aQmLpFCpQFS8?g_st=com.google.maps.preview.copy
-
-
-# [26/01/2025, 6:34:06 PM] Ali Abdullah: https://maps.app.goo.gl/YGi89ZjJgZsjGo4R8?g_st=com.google.maps.preview.copy
-
-
-# [26/01/2025, 6:34:06 PM] Ali Abdullah: https://maps.app.goo.gl/Y2whhoHLimdgcBsS9?g_st=com.google.maps.preview.copy
-
-
-# [26/01/2025, 6:34:06 PM] Ali Abdullah: https://maps.app.goo.gl/4m7uNd3BWLjZb6fQ8?g_st=com.google.maps.preview.copy

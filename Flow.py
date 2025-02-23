@@ -34,59 +34,29 @@ class Flow:
         self.staff_number = staff_number
         self.scan_msg = scan_msg
 
-    def init_conv(self, number):
-        try:
-            res = self.handle_conv_init(number)
-        except Exception as error:
-            print("error in init_conv:", error)
-
-    # def handle_conv_init(self, number):
-    #     try:
-    #         res = self.DB.Cutomers.find_one({ "number" : number })
-    #         if res:
-    #             if res["status"] == "done":
-    #                 entry = {
-    #                     "number": number,
-    #                     "name": res["name"],
-    #                     "status": "lang"
-    #                 }
-    #                 res = self.DB.Cutomers.insert_one(entry)
-    #                 res = wa_msg.send_select_language_list(number)
-    #             else:
-    #                 print("Process Failure, New Conv init with previous not done")
-    #         else:
-    #             entry = {
-    #                 "number": number,
-    #                 "status": "new"
-    #             }
-    #             res = self.DB.Cutomers.insert_one(entry)
-    #             res = wa_msg.send_welcome_message(number)
-    #     except Exception as error:
-    #         print(f"Error in handle_conv_init = {error}")
-
-    # def process_new_customers(self): #meant to run continuously in a separate thread
-    #     try:
-    #         msgs = self.DB.Messages.find({ "read": False })
-    #         if msgs:
-    #             for msg in msgs:
-    #                 number = msg["from"]
-    #                 new_customer = list(self.DB.Cutomers.find({ "number" : number, "status": "new" }))
-    #                 print(f"new_customer: {new_customer}")
-    #                 if new_customer:
-    #                     if len(new_customer) > 1:
-    #                         print("Process Failure, More than one NEW entries for a number")
-    #                     else:
-    #                         new_customer = new_customer[0]
-    #                         print(f"new_customer: {new_customer}")
-    #                         print("reply to welcome msg found")
-    #                         name = msg["msg"]
-    #                         res = wa_msg.send_select_language_list(number)
-    #                         res = self.DB.Cutomers.update_one({ "_id": new_customer["_id"] }, { "$set": { "name": name, "status": "lang" } })
-    #                         res = self.DB.Messages.update_one({ "_id": msg["_id"] }, { "$set": { "read": True } })
-    #         else:
-    #             print("no unread messages")
-    #     except Exception as error:
-    #         print(f"Error in process_new_customers = {error}")
+    def handle_new_scan(self, msg, number, customer_list):
+        if msg["type"] == "text":
+            if msg["msg"] == self.scan_msg:
+                result = self.DB.Cutomers.update_many({"number": number}, {"$set": {"status": "done"}})
+                print(f"new scan found: +{number}")
+                new_scan = False
+                for customer in customer_list:
+                    if customer["status"] != "done":
+                        new_scan = True
+                        break
+                if new_scan:
+                    new_conv_msg = "Starting a new booking, previous one has been cancelled."
+                    res = wa_msg.send_text_message(number, new_conv_msg)
+                entry = {
+                    "number": number,
+                    "status": "lang"
+                }
+                res = wa_msg.send_select_language_list(number)
+                res = self.DB.Cutomers.insert_one(entry)
+                print("handled new scan")
+                return True
+            else: 
+                return False
 
     def handle_conv_flow(self):
         try:
@@ -95,25 +65,10 @@ class Flow:
                 for msg in msgs:
                     res = self.DB.Messages.update_one({ "_id": msg["_id"] }, { "$set": { "read": True } })
                     number = msg["from"]
-                    # customer_list = list(self.DB.Cutomers.find({ "number" : number, "status": { "$ne": "new" } }))
                     customer_list = list(self.DB.Cutomers.find({ "number" : number}))
-                    
-                    if msg["type"] == "text":
-                        if msg["msg"] == self.scan_msg:
-                            print(f"new scan found: +{number}")
-                            result = self.DB.Cutomers.update_many({"number": number}, {"$set": {"status": "done"}})
-                            new_conv_msg = "Starting a new booking, previous one has been cancelled."
-                            res = wa_msg.send_text_message(number, new_conv_msg)
-                            print(res.json())
-                            entry = {
-                                "number": number,
-                                "status": "lang"
-                            }
-                            res = self.DB.Cutomers.insert_one(entry)
-                            res = wa_msg.send_select_language_list(number)
-                            print(res.json())
-                            print("handled new scan")
-                            continue
+
+                    res = self.handle_new_scan(msg, number, customer_list)
+                    if res: continue
                     
                     print(f"customer_list: {customer_list}")
                     if customer_list:
@@ -166,15 +121,15 @@ class Flow:
                                     res = self.DB.Cutomers.update_one({ "_id": customer["_id"] }, { "$set": { "status": "psgr" } })
                                 else:
                                     print("sending dest emaphasis msg")
-                                    loct_emphasis = "Please select destination"
-                                    res = wa_msg.send_text_message(number, loct_emphasis)
+                                    dest_emphasis = Langs[customer["lang"]]["dest_emph"]
+                                    res = wa_msg.send_text_message(number, dest_emphasis)
                             elif customer["status"] == "psgr":
                                 psgr_no_txt = msg["msg"]
                                 try:
                                     psgr_no = int(psgr_no_txt)
                                 except Exception as e:
                                     print("sending psgr emaphasis msg")
-                                    psgr_emphasis = "Please enter a number"
+                                    psgr_emphasis = Langs[customer["lang"]]["psgr_emph"]
                                     res = wa_msg.send_text_message(number, psgr_emphasis)
                                     continue
                                 res = self.DB.Cutomers.update_one({ "_id": customer["_id"] }, { "$set": { "psgr": psgr_no } })
@@ -199,7 +154,7 @@ class Flow:
                                         print(f"loc_obj[link]: {loc_obj["link"]}")
                                         ap_msg = f"{Langs[customer["lang"]]["assembly_point"]}\n{ap_maps_link}"
                                         res = wa_msg.send_text_message(number, ap_msg)
-                                        res, total_cost = wa_msg.send_summary(number, customer["lang"], customer["dest"], customer["psgr"], loc_obj["link"], "Awaiting Confirmation")
+                                        res, total_cost = wa_msg.send_summary(number, customer["lang"], customer["dest"], customer["psgr"], loc_obj["link"])
                                         res = wa_msg.send_cc_msg(number, customer["lang"])
                                         updates = {
                                             "status": "coca",
@@ -210,19 +165,19 @@ class Flow:
                                         res = self.DB.Cutomers.update_one({ "_id": customer["_id"] }, { "$set": updates })
                                     else:
                                         print("sending loct emaphasis msg")
-                                        loct_emphasis = "Please send your location"
+                                        loct_emphasis = Langs[customer["lang"]]["loc_emph"]
                                         res = wa_msg.send_text_message(number, loct_emphasis)
                                 except Exception as e:
                                     print(f"exception caught in loc: {e}")
                                     print("sending loct emaphasis msg")
-                                    loct_emphasis = "Please send your location"
+                                    loct_emphasis = Langs[customer["lang"]]["loc_emph"]
                                     res = wa_msg.send_text_message(number, loct_emphasis)
                                     continue
                             elif customer["status"] == "coca":
                                 result = msg["msg"]
                                 if result not in cc_list:
                                     print("sending coca emaphasis msg")
-                                    loct_emphasis = "Please select confirm or cancel"
+                                    loct_emphasis = Langs[customer["lang"]]["coca_emph"]
                                     res = wa_msg.send_text_message(number, loct_emphasis)
                                 else:
                                     if result == "confirm":

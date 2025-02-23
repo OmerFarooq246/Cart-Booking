@@ -2,7 +2,6 @@ from dotenv import load_dotenv
 import requests
 import os
 from translations import Langs
-from PIL import Image
 
 load_dotenv()
 
@@ -209,7 +208,7 @@ class WhatsApp_Messages():
         except Exception as error:
             raise Exception(f"Error in send_nearest_ap = {error}")
     
-    def send_summary(self, number, lang, destination, passengers, google_maps_link, booking_status):
+    def send_summary(self, number, lang, destination, passengers, google_maps_link):
         try:
             total_cost = self.cost_per_passenger * passengers
             headers = {
@@ -228,8 +227,7 @@ class WhatsApp_Messages():
                         destination=destination,
                         passengers=passengers,
                         google_maps_link=google_maps_link,
-                        total_cost=total_cost,
-                        booking_status=booking_status
+                        total_cost=total_cost
                     )
                 }
             }
