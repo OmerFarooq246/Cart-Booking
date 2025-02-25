@@ -28,10 +28,10 @@ load_dotenv()
 wa_msg = WhatsApp_Messages(15)
 
 class Flow:
-    def __init__(self, staff_number, scan_msg):
+    def __init__(self, scan_msg):
         self.client = MongoClient(os.getenv("MONGO_URI"), server_api=ServerApi('1'), tls=True, tlsCAFile=certifi.where())
         self.DB = self.client["Cart_Booking"]
-        self.staff_number = staff_number
+        self.staff_number = self.DB.Numbers.find_one({ "type": "staff" })
         self.scan_msg = scan_msg
 
     def handle_new_scan(self, msg, number, customer_list):
@@ -273,32 +273,3 @@ class Flow:
             else:
                 string += f"{key}: {value}\n"
         return string
-    
-    def generate_qr_code(self, data, img_path, logo_path=None, logo_scale=0.2):
-        try:
-            qr = qrcode.QRCode(
-                version=5,
-                error_correction=qrcode.constants.ERROR_CORRECT_H,
-                box_size=10,
-                border=4,
-            )
-            qr.add_data(data)
-            qr.make(fit=True)
-            img = qr.make_image(fill_color="black", back_color="white").convert("RGBA")
-            if logo_path:
-                logo = Image.open(logo_path)
-                qr_width, qr_height = img.size
-                max_logo_size = int(min(qr_width, qr_height) * logo_scale)  # 20% of QR code size
-                logo = logo.resize((max_logo_size, max_logo_size), Image.LANCZOS)
-
-                # Calculate logo position (center)
-                logo_x = (qr_width - max_logo_size) // 2
-                logo_y = (qr_height - max_logo_size) // 2
-
-                # Paste logo onto QR code
-                img.paste(logo, (logo_x, logo_y), logo)
-            else:
-                pass
-            img.save(img_path)
-        except Exception as error:
-            print(f"error in generating qr code: ", error)
