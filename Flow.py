@@ -31,7 +31,7 @@ class Flow:
     def __init__(self, scan_msg):
         self.client = MongoClient(os.getenv("MONGO_URI"), server_api=ServerApi('1'), tls=True, tlsCAFile=certifi.where())
         self.DB = self.client["Cart_Booking"]
-        self.staff_number = self.DB.Numbers.find_one({ "type": "staff" })
+        self.staff_number = self.DB.Numbers.find_one({ "type": "staff" })["number"]
         self.scan_msg = scan_msg
 
     def handle_new_scan(self, msg, number, customer_list):
@@ -267,7 +267,7 @@ class Flow:
     def dict_to_string(self, dict_obj):
         string = ""
         for key, value in dict_obj.items():
-            print(f"vale: {value}")
+            print(f"{key}: {value}")
             if isinstance(value, dict):
                 string += f"{key}:\n{self.dict_to_string(value)}"
             else:
