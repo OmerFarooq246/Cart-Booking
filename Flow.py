@@ -212,7 +212,7 @@ class Flow:
 
     def send_booking_id(self, booking_id):
         try:
-            serve_url = f"{os.getenv("SERVE")}/api/generate_qr"
+            serve_url = f"{os.getenv("SERVE")}/generate_qr"
             data = {
                 "booking_id": str(booking_id)
             }
