@@ -132,11 +132,16 @@ class Flow:
                                     psgr_emphasis = Langs[customer["lang"]]["psgr_emph"]
                                     res = wa_msg.send_text_message(number, psgr_emphasis)
                                     continue
-                                res = self.DB.Cutomers.update_one({ "_id": customer["_id"] }, { "$set": { "psgr": psgr_no } })
-                                total_cost_msg = Langs[customer["lang"]]["total_cost"].format(total_cost = psgr_no * wa_msg.cost_per_passenger)
-                                res = wa_msg.send_text_message(number, total_cost_msg)
-                                res = wa_msg.location_req_msg(number, customer["lang"])
-                                res = self.DB.Cutomers.update_one({ "_id": customer["_id"] }, { "$set": { "status": "loct" } })
+                                if psgr_no == 0:
+                                    print("sending psgr emaphasis msg")
+                                    psgr_emphasis = Langs[customer["lang"]]["psgr_emph"]
+                                    res = wa_msg.send_text_message(number, psgr_emphasis)
+                                else:
+                                    res = self.DB.Cutomers.update_one({ "_id": customer["_id"] }, { "$set": { "psgr": psgr_no } })
+                                    total_cost_msg = Langs[customer["lang"]]["total_cost"].format(total_cost = psgr_no * wa_msg.cost_per_passenger)
+                                    res = wa_msg.send_text_message(number, total_cost_msg)
+                                    res = wa_msg.location_req_msg(number, customer["lang"])
+                                    res = self.DB.Cutomers.update_one({ "_id": customer["_id"] }, { "$set": { "status": "loct" } })
                             elif customer["status"] == "loct":
                                 try:
                                     if (isinstance(msg["msg"], dict)):
