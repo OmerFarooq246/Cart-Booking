@@ -70,7 +70,7 @@ class Flow:
                     res = self.handle_new_scan(msg, number, customer_list)
                     if res: continue
                     
-                    print(f"customer_list: {customer_list}")
+                    # print(f"customer_list: {customer_list}")
                     if customer_list:
                         customer_start = list(filter(lambda item: item["status"] == "start", customer_list))
                         customer_lang = list(filter(lambda item: item["status"] == "lang", customer_list))
