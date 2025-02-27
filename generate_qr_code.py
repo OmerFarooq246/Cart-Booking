@@ -38,17 +38,20 @@ def generate_qr_code(data, img_path, logo_path=None, logo_scale=0.2):
       print(f"error in generating qr code: ", error)
 
 
-client = MongoClient(
-    os.getenv("MONGO_URI"), 
-    server_api=ServerApi('1'), 
-    tls=True, tlsCAFile=certifi.where()
-)
-DB = client["Cart_Booking"]
-main_number = DB.Numbers.find_one({ "type": "main" })
-
-scan_msg = "Salam Alykom\nI would like to book a Cart from Jawlah"
-message = urllib.parse.quote(scan_msg)
-data = f"https://wa.me/+{main_number}?text={message}"
-img_path = "./initial_qr_code_logo_test.png"
-logo_path =  "./logo.png"
-generate_qr_code(data, img_path, logo_path)
+try:
+    client = MongoClient(
+        os.getenv("MONGO_URI"), 
+        server_api=ServerApi('1'), 
+        tls=True, tlsCAFile=certifi.where()
+    )
+    DB = client["Cart_Booking"]
+    main_number = DB.Numbers.find_one({ "type": "main" })["number"]
+    print(f"main_number: {main_number}")
+    scan_msg = "Salam Alykom\nI would like to book a Cart from Jawlah"
+    message = urllib.parse.quote(scan_msg)
+    data = f"https://wa.me/+{main_number}?text={message}"
+    img_path = "./initial_qr_code_logo_test.png"
+    logo_path =  "./logo.png"
+    generate_qr_code(data, img_path, logo_path)
+except Exception as error:
+    print(f"error in gen qr code: {error}")
