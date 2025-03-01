@@ -63,6 +63,7 @@ class Flow:
                 res = wa_msg.send_select_language_list(number)
                 res = self.DB.Cutomers.insert_one(entry)
                 print("handled new conv")
+                return True
 
     def handle_conv_flow(self):
         try:
