@@ -4,8 +4,8 @@ import certifi
 import os
 
 try: 
-  main_number = "923359950161"
-  staff_number = "923359950161"
+  main_number = "966537975687"
+  staff_number = "966539775513"
   
   client = MongoClient(
     os.getenv("MONGO_URI"), 
