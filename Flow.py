@@ -33,37 +33,47 @@ class Flow:
         self.scan_msg = scan_msg
 
     def handle_new_scan(self, msg, number, customer_not_done):
-        if msg["type"] == "text":
-            if len(customer_not_done) > 0:
-                if msg["msg"] == self.scan_msg or msg["msg"] == "cancel":
-                    result = self.DB.Cutomers.update_many({"number": number}, {"$set": {"status": "done"}})
-                    if msg["msg"] == self.scan_msg: 
-                        handle_msg = "Starting a new booking, previous one has been cancelled."
-                        print(f"new scan found: +{number}")
-                        res = wa_msg.send_select_language_list(number)
+        try:
+            if msg["type"] == "text":
+                if len(customer_not_done) > 0:
+                    if msg["msg"] == self.scan_msg or msg["msg"] == "cancel":
+                        result = self.DB.Cutomers.update_many({"number": number}, {"$set": {"status": "done"}})
+                        if msg["msg"] == self.scan_msg: 
+                            handle_msg = "Starting a new booking, previous one has been cancelled."
+                            print(f"new scan found: +{number}")
+                            res = wa_msg.send_select_language_list(number)
+                            entry = {
+                                "number": number,
+                                "status": "lang"
+                            }
+                            res = self.DB.Cutomers.insert_one(entry)
+                            print("handled new scan")
+                        else:
+                            if "lang" in list(customer_not_done[0].keys()):
+                                handle_msg =  Langs[customer_not_done[0]["lang"]]["cencellation"]
+                            else:
+                                handle_msg =  Langs["english"]["cencellation"]
+                            print(f"cancel booking found: +{number}")
+                        res = wa_msg.send_text_message(number, handle_msg)
+                        return True
+                    else: 
+                        return False
+                else:
+                    print("in done")
+                    if msg["msg"] != "cancel":
+                        print(f"new conv starting: +{number}")
                         entry = {
                             "number": number,
                             "status": "lang"
                         }
+                        res = wa_msg.send_select_language_list(number)
                         res = self.DB.Cutomers.insert_one(entry)
-                        print("handled new scan")
+                        print("handled new conv")
+                        return True
                     else:
-                        handle_msg =  Langs[customer_not_done[0]["lang"]]["cencellation"]
-                        print(f"cancel booking found: +{number}")
-                    res = wa_msg.send_text_message(number, handle_msg)
-                    return True
-                else: 
-                    return False
-            else:
-                print(f"new conv starting: +{number}")
-                entry = {
-                    "number": number,
-                    "status": "lang"
-                }
-                res = wa_msg.send_select_language_list(number)
-                res = self.DB.Cutomers.insert_one(entry)
-                print("handled new conv")
-                return True
+                        return False
+        except Exception as error:
+            print(f"error in handle_new_scan: {error}")
 
     def handle_conv_flow(self):
         try:
