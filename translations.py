@@ -16,7 +16,7 @@ Langs = {
             "Cancel"
         ],
         "confirmation": "Your reservation is confirmed and now Active.",
-        # "cencellation": "Your reservation has been canceled.\nThank you for reaching out!",
+        "cencellation": "Booking has been cancelled.",
         "summary": "*Booking Summary:*\nPhone Number: {number}\nDestination: {destination}\nNo. of Passengers: {passengers}\nTotal Cost: {total_cost}\nPickup Point: {google_maps_link}\nBooking Status: Awaiting Confirmation",
         "qr_code": "Here is your booking QR code:",
         "new_scan": "Starting a new booking, previous one has been cancelled.",
@@ -25,6 +25,7 @@ Langs = {
         "psgr_emph": "Please enter a number.",
         "loc_emph": "Please send your location.",
         "coca_emph": "Please select confirm or cancel.",
+        "cancel_btn_msg": "To cancel the booking, click on the cancel button."
     },
     "arabic": {
         "introduction": "مرحباً بك في جولة، الخدمة التي تتيح لك التنقل بسهولة وراحة باستخدام عربات كهربائية لنقلك من وإلى المسجد النبوي ومسجد قباء",
@@ -43,7 +44,7 @@ Langs = {
             "إلغاء"
         ],
         "confirmation": "تم تأكيد الحجز\nحالة الحجز: نشط (Active)",
-        # "cencellation": "تم إلغاء الحجز\nشكراً لتواصلك معنا",
+        "cencellation": "Booking has been cancelled.",
         "summary": "*ملخص الحجز:*\nرقم الهاتف: {number}\الوجهة: {destination}\nعدد الركاب: {passengers}\nالتكلفة الإجمالية: {total_cost}\nنقطة الالتقاء: {google_maps_link}\nحالة الحجز:  في انتظار التأكيد",
         "qr_code": "هذا هو باركود الحجز الخاص بك:",
         "new_scan": "تم بدء حجز جديد، الحجز السابق تم إلغاؤه.",
@@ -52,6 +53,7 @@ Langs = {
         "psgr_emph": "فضلاً أدخل رقمًا.",
         "loc_emph": "فضلاً أرسل موقعك.",
         "coca_emph": "فضلاً اختر تأكيد أو إلغاء.",
+        "cancel_btn_msg": "To cancel the booking, click on the cancel button."
     },
     "urdu": {
         "introduction": "جولة میں خوش آمدید، جہاں آپ کو بجلی سے چلنے والی گاڑیوں کے ذریعے مسجد نبوی اور مسجد قباء تک بآسانی اور آرام سے پہنچایا جاتا ہے۔",
@@ -70,7 +72,7 @@ Langs = {
             "منسوخ"
         ],
         "confirmation": "ہے Active آپ کی بکنگ کی تصدیق ہوگئی ہے اور اب",
-        # "cencellation": "Your reservation has been canceled.\nThank you for reaching out!",
+        "cencellation": "Booking has been cancelled.",
         "summary": "*بکنگ کا خلاصہ:*\nفون نمبر: {number}\nمنزل: {destination}\nمسافروں کی تعداد: {passengers}\nکل لاگت: {total_cost}\nپک اپ پوائنٹ: {google_maps_link}\nبکنگ کی حیثیت: تصدیق کا انتظار",
         "qr_code": "ہ آپ کی بکنگ کا QR کوڈ ہے:",
         "new_scan": "نئی بکنگ شروع کردی گئی، پچھلی بکنگ منسوخ کردی گئی ہے۔",
@@ -79,6 +81,7 @@ Langs = {
         "psgr_emph": "براہ کرم نمبر درج کریں۔",
         "loc_emph": "براہ کرم اپنا مقام بھیجیں۔",
         "coca_emph": "براہ کرم تصدیق یا منسوخی کا انتخاب کریں۔",
+        "cancel_btn_msg": "To cancel the booking, click on the cancel button."
     },
     "turkish": {
         "introduction": "Jawlah'a hoş geldiniz. Elektrikli arabalarla Mescid-i Nebevi ve Kuba Mescidi arasında kolay ve rahat ulaşım sağlıyoruz.",
@@ -97,7 +100,7 @@ Langs = {
             "İptal"
         ],
         "confirmation": "Rezervasyonunuz onaylandı ve Active konumunda.",
-        # "cencellation": "Your reservation has been canceled.\nThank you for reaching out!",
+        "cencellation": "Booking has been cancelled.",
         "summary": "*Rezervasyon Özeti:*\nTelefon Numarası: {number}\nHedef: {destination}\nYolcu Sayısı: {passengers}\nToplam Ücret: {total_cost}\nToplama Noktası: {google_maps_link}\nRezervasyon Durumu: Onay Bekleniyor",
         "qr_code": "İşte rezervasyonunuzun QR kodu:",
         "new_scan": "Yeni bir rezervasyon başlatıldı, önceki rezervasyon iptal edildi.",
@@ -106,6 +109,7 @@ Langs = {
         "psgr_emph": "Lütfen bir sayı girin.",
         "loc_emph": "Lütfen konumunuzu gönderin.",
         "coca_emph": "Lütfen onayla veya iptal et seçeneğini seçin.",
+        "cancel_btn_msg": "To cancel the booking, click on the cancel button."
     },
     "french": {
         "introduction": "Bienvenue chez Jawlah, un service qui propose un transport facile et confortable en voiturette électrique entre la Mosquée du Prophète et la Mosquée de Quba.",
@@ -124,7 +128,7 @@ Langs = {
             "Annuler"
         ],
         "confirmation": "Votre réservation est confirmée et désormais Active.",
-        # "cencellation": "Your reservation has been canceled.\nThank you for reaching out!",
+        "cencellation": "Booking has been cancelled.",
         "summary": "*Résumé de la réservation:*\nNuméro de téléphone: {number}\nDestination: {destination}\nNombre de passagers: {passengers}\nCoût total: {total_cost}\nPoint de prise en charge: {google_maps_link}\nStatut de la réservation: En attente de confirmation",
         "qr_code": "Voici votre code QR de réservation:",
         "new_scan": "Une nouvelle réservation a été lancée, la précédente a été annulée.",
@@ -133,6 +137,7 @@ Langs = {
         "psgr_emph": "Veuillez entrer un numéro.",
         "loc_emph": "Veuillez envoyer votre position.",
         "coca_emph": "Veuillez sélectionner confirmer ou annuler.",
+        "cancel_btn_msg": "To cancel the booking, click on the cancel button."
     },
 }
 

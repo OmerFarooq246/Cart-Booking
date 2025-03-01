@@ -7,9 +7,7 @@ import requests
 from WhatsApp_Messages import WhatsApp_Messages
 from translations import langs_list, Langs, cc_list, dests_list, locations_list
 from datetime import datetime
-import qrcode
 import numpy as np
-from PIL import Image
 
 '''
 customer.status = 
@@ -34,29 +32,37 @@ class Flow:
         self.staff_number = self.DB.Numbers.find_one({ "type": "staff" })["number"]
         self.scan_msg = scan_msg
 
-    def handle_new_scan(self, msg, number, customer_list):
+    def handle_new_scan(self, msg, number, customer_not_done, lang):
         if msg["type"] == "text":
-            if msg["msg"] == self.scan_msg:
-                result = self.DB.Cutomers.update_many({"number": number}, {"$set": {"status": "done"}})
-                print(f"new scan found: +{number}")
-                new_scan = False
-                for customer in customer_list:
-                    if customer["status"] != "done":
-                        new_scan = True
-                        break
-                if new_scan:
-                    new_conv_msg = "Starting a new booking, previous one has been cancelled."
-                    res = wa_msg.send_text_message(number, new_conv_msg)
+            if len(customer_not_done) > 0:
+                if msg["msg"] == self.scan_msg or msg["msg"] == "cancel":
+                    result = self.DB.Cutomers.update_many({"number": number}, {"$set": {"status": "done"}})
+                    if msg["msg"] == self.scan_msg: 
+                        handle_msg = "Starting a new booking, previous one has been cancelled."
+                        print(f"new scan found: +{number}")
+                        res = wa_msg.send_select_language_list(number)
+                        entry = {
+                            "number": number,
+                            "status": "lang"
+                        }
+                        res = self.DB.Cutomers.insert_one(entry)
+                        print("handled new scan")
+                    else:
+                        handle_msg =  Langs[customer_not_done[0]["lang"]]["cencellation"]
+                        print(f"cancel booking found: +{number}")
+                    res = wa_msg.send_text_message(number, handle_msg)
+                    return True
+                else: 
+                    return False
+            else:
+                print(f"new conv starting: +{number}")
                 entry = {
                     "number": number,
                     "status": "lang"
                 }
                 res = wa_msg.send_select_language_list(number)
                 res = self.DB.Cutomers.insert_one(entry)
-                print("handled new scan")
-                return True
-            else: 
-                return False
+                print("handled new conv")
 
     def handle_conv_flow(self):
         try:
@@ -67,7 +73,8 @@ class Flow:
                     number = msg["from"]
                     customer_list = list(self.DB.Cutomers.find({ "number" : number}))
 
-                    res = self.handle_new_scan(msg, number, customer_list)
+                    customer_not_done = list(filter(lambda item: item["status"] != "done", customer_list))
+                    res = self.handle_new_scan(msg, number, customer_not_done)
                     if res: continue
                     
                     # print(f"customer_list: {customer_list}")
@@ -79,23 +86,23 @@ class Flow:
                         customer_loct = list(filter(lambda item: item["status"] == "loct", customer_list))
                         customer_coca = list(filter(lambda item: item["status"] == "coca", customer_list))
                         if len(customer_start) > 1:
-                                print("Process Failure, More than one START entries for a number")
-                                continue
+                            print(f"Process Failure, More than one START entries for {number}")
+                            continue
                         if len(customer_lang) > 1:
-                                print("Process Failure, More than one LANG entries for a number")
-                                continue
+                            print(f"Process Failure, More than one LANG entries for {number}")
+                            continue
                         if len(customer_dest) > 1:
-                                print("Process Failure, More than one DEST entries for a number")
-                                continue
+                            print(f"Process Failure, More than one DEST entries for {number}")
+                            continue
                         if len(customer_psgr) > 1:
-                                print("Process Failure, More than one PSGR entries for a number")
-                                continue
+                            print(f"Process Failure, More than one PSGR entries for {number}")
+                            continue
                         if len(customer_loct) > 1:
-                                print("Process Failure, More than one LOCT entries for a number")
-                                continue
+                            print(f"Process Failure, More than one LOCT entries for {number}")
+                            continue
                         if len(customer_coca) > 1:
-                                print("Process Failure, More than one COCA entries for a number")
-                                continue
+                            print(f"Process Failure, More than one COCA entries for {number}")
+                            continue
                         
                         for customer in customer_list:
                             if customer["status"] == "start":
