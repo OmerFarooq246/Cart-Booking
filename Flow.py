@@ -34,7 +34,7 @@ class Flow:
 
     def handle_new_scan(self, msg, number, customer_not_done):
         try:
-            if msg["type"] == "text":
+            if msg["type"] == "text" or msg["type"] == "interactive":
                 if len(customer_not_done) > 0:
                     if msg["msg"] == self.scan_msg or msg["msg"] == "cancel":
                         result = self.DB.Cutomers.update_many({"number": number}, {"$set": {"status": "done"}})
