@@ -36,7 +36,7 @@ class Flow:
         try:
             if msg["type"] == "text" or msg["type"] == "interactive":
                 if len(customer_not_done) > 0:
-                    if msg["msg"] == self.scan_msg or msg["msg"] == "cancel":
+                    if msg["msg"] == self.scan_msg or msg["msg"].lower() == "cancel":
                         result = self.DB.Cutomers.update_many({"number": number}, {"$set": {"status": "done"}})
                         if msg["msg"] == self.scan_msg: 
                             handle_msg = "Starting a new booking, previous one has been cancelled."
