@@ -1,12 +1,15 @@
+from dotenv import load_dotenv
 from pymongo import MongoClient
 from pymongo.server_api import ServerApi
 import certifi
 import os
 
+load_dotenv()
+
 try: 
   main_number = "966537975687"
   staff_number = "966539775513"
-  
+  print(os.getenv("MONGO_URI"))
   client = MongoClient(
     os.getenv("MONGO_URI"), 
     server_api=ServerApi('1'), 
