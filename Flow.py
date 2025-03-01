@@ -59,7 +59,6 @@ class Flow:
                     else: 
                         return False
                 else:
-                    print("in done")
                     if msg["msg"] != "cancel":
                         print(f"new conv starting: +{number}")
                         entry = {
