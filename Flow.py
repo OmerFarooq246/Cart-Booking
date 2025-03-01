@@ -32,7 +32,7 @@ class Flow:
         self.staff_number = self.DB.Numbers.find_one({ "type": "staff" })["number"]
         self.scan_msg = scan_msg
 
-    def handle_new_scan(self, msg, number, customer_not_done, lang):
+    def handle_new_scan(self, msg, number, customer_not_done):
         if msg["type"] == "text":
             if len(customer_not_done) > 0:
                 if msg["msg"] == self.scan_msg or msg["msg"] == "cancel":
