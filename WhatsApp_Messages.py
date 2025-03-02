@@ -235,40 +235,6 @@ class WhatsApp_Messages():
             return res, total_cost
         except Exception as error:
             raise Exception(f"Error in send_summary = {error}")
-        
-    def send_cancel_btn(self, number, lang):
-        try:
-            headers = {
-                "Authorization": f"Bearer {os.getenv("ACCESS_TOKEN")}",
-                "Content-Type": "application/json",
-            }
-            data = {
-                "messaging_product": "whatsapp",
-                "recipient_type": "individual",
-                "to": f"+{number}",
-                "type": "interactive",
-                "interactive": {
-                    "type": "button",
-                    "body": {
-                        "text": Langs[lang]["cancel_btn_msg"]
-                    },
-                    "action": {
-                    "buttons": [
-                        {
-                            "type": "reply",
-                            "reply": {
-                                "id": "cancel",
-                                "title": Langs[lang]["cc_options"][1]
-                            }
-                        }
-                    ]
-                    }
-                }
-            }
-            res = requests.post(self.url, headers=headers, json=data)
-            return res
-        except Exception as error:
-            raise Exception(f"Error in send_cc_msg = {error}")
     
     def send_cc_msg(self, number, lang):
         try:

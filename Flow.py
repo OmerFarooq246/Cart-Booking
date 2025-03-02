@@ -36,7 +36,7 @@ class Flow:
         try:
             if msg["type"] == "text" or msg["type"] == "interactive":
                 if len(customer_not_done) > 0:
-                    if msg["msg"] == self.scan_msg or msg["msg"].lower() == "cancel":
+                    if msg["msg"] == self.scan_msg or msg["msg"].lower() == "cancel" or msg["msg"].lower() == "00":
                         result = self.DB.Cutomers.update_many({"number": number}, {"$set": {"status": "done"}})
                         if msg["msg"] == self.scan_msg: 
                             handle_msg = "Starting a new booking, previous one has been cancelled."
@@ -59,7 +59,7 @@ class Flow:
                     else: 
                         return False
                 else:
-                    if msg["msg"] != "cancel":
+                    if msg["msg"] != "cancel" and msg["msg"] != "00":
                         print(f"new conv starting: +{number}")
                         entry = {
                             "number": number,
@@ -124,9 +124,10 @@ class Flow:
                                     print("sending lang emaphasis msg")
                                     select_lan_emphasis = "Please select language from the list"
                                     res = wa_msg.send_text_message(number, select_lan_emphasis)
+                                    cancel_msg = Langs["english"]["cancel_btn_msg"]
+                                    res = wa_msg.send_text_message(number, cancel_msg)
                                 else:
                                     res = self.DB.Cutomers.update_one({ "_id": customer["_id"] }, { "$set": { "lang": selected_lang } })
-                                    res = wa_msg.send_cancel_btn(number, selected_lang)
                                     res = wa_msg.send_text_message(number, Langs[selected_lang]["introduction"])
                                     res = wa_msg.send_select_destination(number, selected_lang)
                                     res = self.DB.Cutomers.update_one({ "_id": customer["_id"] }, { "$set": { "status": "dest" } })
@@ -141,6 +142,8 @@ class Flow:
                                     print("sending dest emaphasis msg")
                                     dest_emphasis = Langs[customer["lang"]]["dest_emph"]
                                     res = wa_msg.send_text_message(number, dest_emphasis)
+                                    cancel_msg = Langs[customer["lang"]]["cancel_btn_msg"]
+                                    res = wa_msg.send_text_message(number, cancel_msg)
                             elif customer["status"] == "psgr":
                                 psgr_no_txt = msg["msg"]
                                 try:
@@ -149,11 +152,15 @@ class Flow:
                                     print("sending psgr emaphasis msg")
                                     psgr_emphasis = Langs[customer["lang"]]["psgr_emph"]
                                     res = wa_msg.send_text_message(number, psgr_emphasis)
+                                    cancel_msg = Langs[customer["lang"]]["cancel_btn_msg"]
+                                    res = wa_msg.send_text_message(number, cancel_msg)
                                     continue
                                 if psgr_no == 0:
                                     print("sending psgr emaphasis msg")
                                     psgr_emphasis = Langs[customer["lang"]]["psgr_emph"]
                                     res = wa_msg.send_text_message(number, psgr_emphasis)
+                                    cancel_msg = Langs[customer["lang"]]["cancel_btn_msg"]
+                                    res = wa_msg.send_text_message(number, cancel_msg)
                                 else:
                                     res = self.DB.Cutomers.update_one({ "_id": customer["_id"] }, { "$set": { "psgr": psgr_no } })
                                     total_cost_msg = Langs[customer["lang"]]["total_cost"].format(total_cost = psgr_no * wa_msg.cost_per_passenger)
@@ -190,11 +197,15 @@ class Flow:
                                         print("sending loct emaphasis msg")
                                         loct_emphasis = Langs[customer["lang"]]["loc_emph"]
                                         res = wa_msg.send_text_message(number, loct_emphasis)
+                                        cancel_msg = Langs[customer["lang"]]["cancel_btn_msg"]
+                                        res = wa_msg.send_text_message(number, cancel_msg)
                                 except Exception as e:
                                     print(f"exception caught in loc: {e}")
                                     print("sending loct emaphasis msg")
                                     loct_emphasis = Langs[customer["lang"]]["loc_emph"]
                                     res = wa_msg.send_text_message(number, loct_emphasis)
+                                    cancel_msg = Langs[customer["lang"]]["cancel_btn_msg"]
+                                    res = wa_msg.send_text_message(number, cancel_msg)
                                     continue
                             elif customer["status"] == "coca":
                                 result = msg["msg"]
@@ -202,6 +213,8 @@ class Flow:
                                     print("sending coca emaphasis msg")
                                     loct_emphasis = Langs[customer["lang"]]["coca_emph"]
                                     res = wa_msg.send_text_message(number, loct_emphasis)
+                                    cancel_msg = Langs[customer["lang"]]["cancel_btn_msg"]
+                                    res = wa_msg.send_text_message(number, cancel_msg)
                                 else:
                                     if result == "confirm":
                                         booking = {
@@ -225,7 +238,7 @@ class Flow:
                                     # else:
                                         # res = wa_msg.send_text_message(number, Langs[customer["lang"]]["cencellation"])
                                     res = self.DB.Cutomers.update_one({ "_id": customer["_id"] }, { "$set": { "status": "done" } })
-                            else:
+                            elif customer["status"] != "done":
                                 print(" -- unkown status found --")
             else:
                 print(f"no in progress convs found")
@@ -283,7 +296,7 @@ class Flow:
             print(f"min_index: {min_index}")
             min_loc = locations_list[min_index]
             print(f"min_loc: {min_loc}")
-            return min_loc
+            return [min_loc[1], min_loc[0]]
         except Exception as error:
             print(f"error in get_nearest_ap: ", error)
     
