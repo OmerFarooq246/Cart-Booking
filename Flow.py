@@ -8,6 +8,7 @@ from WhatsApp_Messages import WhatsApp_Messages
 from translations import langs_list, Langs, cc_list, dests_list, locations_list
 from datetime import datetime
 import numpy as np
+import copy
 
 '''
 customer.status = 
@@ -274,7 +275,7 @@ class Flow:
 
     def get_nearest_ap(self, lati, long):
         try:
-            all_locations = locations_list
+            all_locations = copy.deepcopy(locations_list)
             all_locations.append([long, lati])
             base_url = os.getenv("FOOT_WALKING_URL")
             key = os.getenv("OPEN_ROUTE_KEY")
